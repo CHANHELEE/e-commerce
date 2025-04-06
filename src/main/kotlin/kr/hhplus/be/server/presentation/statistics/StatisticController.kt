@@ -1,9 +1,9 @@
-package kr.hhplus.be.server.presentation.statistic
+package kr.hhplus.be.server.presentation.statistics
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 import kr.hhplus.be.server.presentation.common.annotation.SuccessResponse
-import kr.hhplus.be.server.presentation.statistic.model.StatisticResponse
+import kr.hhplus.be.server.presentation.statistics.model.StatisticResponse
 import org.springframework.web.bind.annotation.*
 
 @RestController
