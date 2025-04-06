@@ -15,6 +15,14 @@ class OrderRequest {
         val orderedProduct: List<OrderedProduct>?,
     )
 
+    data class PatchOrder(
+        @field:NotNull(message = "주문 식별 값(orderId)은 필수입니다.")
+        val orderId: Long?,
+        val couponId: Long?,
+        @field:Valid
+        val orderedProduct: List<OrderedProduct>?,
+    )
+
     data class OrderedProduct(
         @field:NotNull(message = "상품 식별 값(productId)은 필수입니다.")
         val productId: Long?,
