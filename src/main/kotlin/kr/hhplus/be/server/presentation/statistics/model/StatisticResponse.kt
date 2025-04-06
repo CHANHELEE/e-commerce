@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.presentation.statistic.model
+package kr.hhplus.be.server.presentation.statistics.model
 
 class StatisticResponse {
 
