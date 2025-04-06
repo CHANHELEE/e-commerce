@@ -4,13 +4,14 @@ class OrderRequest {
 
     data class Order(
         val userId: Long,
-        val orderContents: List<OrderContent>
+        val couponId: Long?,
+        val orderedProduct: List<OrderedProduct>
     )
 
-    data class OrderContent(
+    data class OrderedProduct(
         val productId: Long,
+        val productOptionId: Long,
         val quantity: Long,
-        val couponId: Long?,
     )
 
     data class Payment(

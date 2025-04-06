@@ -19,12 +19,11 @@ class OrderController {
     )
     @PostMapping("")
     @SuccessResponse
-    fun order(@RequestBody orderRequest: OrderRequest.Order): List<OrderResponse.Order> =
-        listOf(
-            OrderResponse.Order(
-                1L,
-                listOf(OrderResponse.OrderContent(1L, 20L, null))
-            )
+    fun order(@RequestBody orderRequest: OrderRequest.Order): OrderResponse.Order =
+        OrderResponse.Order(
+            1L,
+            null,
+            listOf(OrderResponse.OrderedProduct(1L, 1L, 20L))
         )
 
     @Operation(
