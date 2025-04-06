@@ -24,3 +24,5 @@
     - PRODUCTS
     - STOCKS
     - PRODUCTS_OPTIONS
+  - **통계 도메인**
+    - POPULAR_PRODUCTS
