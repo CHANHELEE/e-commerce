@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.server.ServerHttpRequest
 import org.springframework.http.server.ServerHttpResponse
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
@@ -66,5 +67,18 @@ class ApiResponseAdvice : ResponseBodyAdvice<Any> {
                     message = BusinessErrorCode.INTERNAL_SERVER_ERROR.message,
                 )
             )
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationException(e: MethodArgumentNotValidException): ResponseEntity<ApiResponse<Nothing>> {
+        val errorMessage =
+            e.bindingResult.fieldErrors.firstOrNull()?.defaultMessage ?: BusinessErrorCode.VALIDATION_ERROR.message
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            ApiResponse.error(
+                BusinessErrorCode.VALIDATION_ERROR.status,
+                BusinessErrorCode.VALIDATION_ERROR.code,
+                errorMessage,
+            )
+        )
     }
 }
