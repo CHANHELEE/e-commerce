@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.presentation.common.enums
+package kr.hhplus.be.server.common.enums
 
 import kr.hhplus.be.server.presentation.common.BusinessCode
 

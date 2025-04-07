@@ -2,7 +2,7 @@ package kr.hhplus.be.server
 
 import kr.hhplus.be.server.presentation.common.ApiResponse
 import kr.hhplus.be.server.presentation.common.annotation.SuccessResponse
-import kr.hhplus.be.server.presentation.common.enums.BusinessErrorCode
+import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import org.springframework.core.MethodParameter
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
