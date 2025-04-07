@@ -4,6 +4,9 @@ import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.fixtures.product.ProductCommandFixture
 import kr.hhplus.be.server.fixtures.product.ProductFixture
+import kr.hhplus.be.server.fixtures.product.ProductOptionCommandFixture
+import kr.hhplus.be.server.fixtures.product.ProductOptionFixture
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -62,6 +65,66 @@ class ProductServiceTest {
             //then
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.PRODUCT_NOT_FOUND)
             verify(productRepository, times(1)).findById(productCommand.productId)
+
+        }
+    }
+
+    @Nested
+    inner class ProductOptions {
+
+        @Test
+        fun `상품옵션을 조회 한다`() {
+
+            //given
+            val productCommand = ProductOptionCommandFixture.get()
+            val productOptions = listOf(
+                ProductOptionFixture.get(1L),
+                ProductOptionFixture.get(2L),
+            )
+            given(productRepository.findAllOptionsBy(productCommand.productId)).willReturn(productOptions)
+
+            //when
+            val returnedProduct = productService.getProductOptionsBy(productCommand)
+
+            //then
+            assertThat(returnedProduct)
+                .hasSize(2)
+                .extracting("productId", "name", "price", "size", "stock")
+                .containsExactlyInAnyOrder(
+                    Assertions.tuple(
+                        productOptions[0].productId,
+                        productOptions[0].name,
+                        productOptions[0].price,
+                        productOptions[0].size,
+                        productOptions[0].stock,
+                    ),
+                    Assertions.tuple(
+                        productOptions[1].productId,
+                        productOptions[1].name,
+                        productOptions[1].price,
+                        productOptions[1].size,
+                        productOptions[1].stock
+                    )
+                )
+            verify(productRepository, times(1)).findAllOptionsBy(productCommand.productId)
+        }
+
+        @Test
+        fun `상품 옵션이 존재하지 않을 시 Business 예외(PRODUCT_OPTIONS_NOT_FOUND)가 발생한다 `() {
+
+            //given
+            val productCommand = ProductOptionCommandFixture.get()
+            val productEntity = null
+            given(productRepository.findAllOptionsBy(productCommand.productId)).willReturn(productEntity)
+
+            //when
+            val exception = assertThrows<BusinessException> {
+                productService.getProductOptionsBy(productCommand)
+            }
+
+            //then
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.PRODUCT_OPTIONS_NOT_FOUND)
+            verify(productRepository, times(1)).findAllOptionsBy(productCommand.productId)
 
         }
     }

@@ -5,4 +5,8 @@ class ProductCommand {
     data class Product(
         val productId: Long,
     )
+
+    data class ProductOption(
+        val productId: Long,
+    )
 }

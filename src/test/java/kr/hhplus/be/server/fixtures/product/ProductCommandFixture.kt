@@ -10,3 +10,12 @@ object ProductCommandFixture {
         productId = productId,
     )
 }
+
+object ProductOptionCommandFixture {
+
+    fun get(
+        productId: Long = 1L,
+    ): ProductCommand.ProductOption = ProductCommand.ProductOption(
+        productId = productId,
+    )
+}

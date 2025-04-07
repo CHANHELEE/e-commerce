@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.fixtures.product
 
 import kr.hhplus.be.server.domain.product.model.Product
+import kr.hhplus.be.server.domain.product.model.ProductOption
 import java.time.LocalDateTime
 
 object ProductFixture {
@@ -17,5 +18,23 @@ object ProductFixture {
         price = price,
         createdAt = createdAt,
         updatedAt = updatedAt,
+    )
+}
+
+
+object ProductOptionFixture {
+
+    fun get(
+        productId: Long = 1L,
+        name: String = "테스트 상품",
+        price: Long = 10_000L,
+        size: String = "대",
+        stock: Long = 100L,
+    ): ProductOption = ProductOption(
+        productId = productId,
+        name = name,
+        price = price,
+        size = size,
+        stock = stock,
     )
 }

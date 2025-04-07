@@ -9,3 +9,12 @@ data class Product(
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime,
 )
+
+
+data class ProductOption(
+    val productId: Long,
+    var name: String,
+    var price: Long,
+    var size: String,
+    var stock: Long,
+)
