@@ -1,8 +1,11 @@
 package kr.hhplus.be.server.presentation.coupon
 
 import io.swagger.v3.oas.annotations.Operation
+import jakarta.validation.Valid
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 import kr.hhplus.be.server.presentation.common.annotation.SuccessResponse
+import kr.hhplus.be.server.presentation.common.model.PagingRequest
+import kr.hhplus.be.server.presentation.common.model.PagingResponse
 import kr.hhplus.be.server.presentation.coupon.model.CouponRequest
 import kr.hhplus.be.server.presentation.coupon.model.CouponResponse
 import org.springframework.web.bind.annotation.*
@@ -19,8 +22,13 @@ class CouponController {
     )
     @GetMapping("")
     @SuccessResponse
-    fun coupons(): List<CouponResponse.Coupon> =
-        listOf(CouponResponse.Coupon(1L, 100L, "test_coupon"))
+    fun coupons(@ModelAttribute @Valid pagingRequest: PagingRequest): PagingResponse<CouponResponse.Coupon> =
+        PagingResponse(
+            1,
+            1,
+            1,
+            listOf(CouponResponse.Coupon(1L, 100L, "test_coupon"))
+        )
 
     @Operation(
         summary = "쿠폰 발급", responses = [SwaggerApiResponse(
