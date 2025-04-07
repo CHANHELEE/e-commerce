@@ -1,5 +1,6 @@
 package kr.hhplus.be.server
 
+import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.presentation.common.ApiResponse
 import kr.hhplus.be.server.presentation.common.annotation.SuccessResponse
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
@@ -94,6 +95,18 @@ class ApiResponseAdvice : ResponseBodyAdvice<Any> {
                 status = BusinessErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH_ERROR.status,
                 code = BusinessErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH_ERROR.code,
                 message = message
+            )
+        )
+    }
+
+    @ExceptionHandler(BusinessException::class)
+    fun handleBusinessException(e: BusinessException): ResponseEntity<ApiResponse<Nothing>> {
+        val error = e.errorCode
+        return ResponseEntity.status(error.status).body(
+            ApiResponse.error(
+                status = error.status,
+                code = error.code,
+                message = error.message
             )
         )
     }
