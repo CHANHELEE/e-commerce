@@ -8,6 +8,7 @@ import kr.hhplus.be.server.presentation.common.model.PagingRequest
 import kr.hhplus.be.server.presentation.common.model.PagingResponse
 import kr.hhplus.be.server.presentation.product.model.ProductResponse
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/products")
@@ -26,7 +27,24 @@ class ProductController {
     @GetMapping("{productId}")
     @SuccessResponse
     fun product(@PathVariable productId: Long): ProductResponse.Product =
-        ProductResponse.Product(productId, "테스트 상품", 10_000L, 100L, "대")
+        ProductResponse.Product(productId, "테스트 상품", 10_000L, LocalDateTime.now())
+
+    @Operation(
+        summary = "상품 옵션 조회",
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "상품 옵션 조회"
+            )
+        ]
+    )
+    @GetMapping("{productId}/options")
+    @SuccessResponse
+    fun productOptions(@PathVariable productId: Long): List<ProductResponse.ProductOption> =
+        listOf(
+            ProductResponse.ProductOption("대", 100L)
+        )
+
 
     @Operation(
         summary = "상품 목록 조회",
@@ -54,7 +72,7 @@ class ProductController {
             1,
             1,
             1,
-            listOf( ProductResponse.Product(1L, "테스트 상품", 10_000L, 100L, "대"))
+            listOf(ProductResponse.Product(1L, "테스트 상품", 10_000L, LocalDateTime.now()))
         )
 
 }
