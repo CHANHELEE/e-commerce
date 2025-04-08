@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.common.enums
 
+import kr.hhplus.be.server.domain.point.model.Point
 import kr.hhplus.be.server.presentation.common.BusinessCode
 
 enum class BusinessErrorCode(
@@ -17,4 +18,9 @@ enum class BusinessErrorCode(
     PRODUCT_NOT_FOUND("PRODUCT-404", "존재하지 않는 상품 입니다.", 404),
     PRODUCT_OPTIONS_NOT_FOUND("PRODUCT-405", "상품 옵션이 존재하지 않습니다.", 404),
     PRODUCTS_NOT_EXIST("PRODUCT-406", "조회 가능한 상품이 없습니다.", 404),
+
+    //포인트
+    INVALID_POINT_CHARGE_AMOUNT("POINT-400", "포인트 충전시 ${Point.MIN}원 이상의 값만 충전 가능 합니다. ", 400),
+    EXCEED_POINT_LIMIT("POINT-400", "보유 포인트는 ${Point.MAX} 을 초과 할 수 없습니다.", 400),
+    USER_POINT_NOT_FOUND("POINT-404", "해당 사용자 포인트를 조회할 수 없습니다.", 404),
 }
