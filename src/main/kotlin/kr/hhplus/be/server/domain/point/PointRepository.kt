@@ -10,4 +10,6 @@ interface PointRepository {
     fun savePoint(point: Point): Point
 
     fun savePointHistory(pointHistory: PointHistory): PointHistory
+
+    fun findBy(userId: Long): Point?
 }

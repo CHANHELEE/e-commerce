@@ -6,4 +6,8 @@ class PointCommand {
         val userId: Long,
         val amount: Long,
     )
+
+    data class Point(
+        val userId: Long,
+    )
 }

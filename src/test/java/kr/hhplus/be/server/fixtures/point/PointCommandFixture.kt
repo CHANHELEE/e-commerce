@@ -12,3 +12,12 @@ object PointChargeCommandFixture {
         amount = amount,
     )
 }
+
+object PointCommandFixture {
+
+    fun get(
+        userId: Long = 1L,
+    ): PointCommand.Point = PointCommand.Point(
+        userId = userId,
+    )
+}

@@ -34,4 +34,8 @@ class PointService(
         return point
     }
 
+    fun getPoint(pointCommand: PointCommand.Point): Point =
+        pointRepository.findBy(pointCommand.userId)
+            ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
+
 }

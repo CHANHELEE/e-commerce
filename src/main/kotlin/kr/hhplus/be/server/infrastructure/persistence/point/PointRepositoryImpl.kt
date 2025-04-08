@@ -20,4 +20,8 @@ class PointRepositoryImpl : PointRepository {
     override fun savePointHistory(pointHistory: PointHistory): PointHistory {
         TODO("Not yet implemented")
     }
+
+    override fun findBy(userId: Long): Point? {
+        TODO("Not yet implemented")
+    }
 }

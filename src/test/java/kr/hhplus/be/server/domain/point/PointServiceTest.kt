@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.point
 
 import kr.hhplus.be.server.fixtures.point.PointChargeCommandFixture
+import kr.hhplus.be.server.fixtures.point.PointCommandFixture
 import kr.hhplus.be.server.fixtures.point.PointFixture
 import kr.hhplus.be.server.fixtures.point.PointHistoryFixture
 import org.assertj.core.api.Assertions.assertThat
@@ -46,5 +47,24 @@ class PointServiceTest {
         verify(pointRepository, times(1)).findUserPointWithLockBy(pointChargeCommand.userId)
         verify(pointRepository, times(1)).savePoint(any())
         verify(pointRepository, times(1)).savePointHistory(any())
+    }
+
+    @Test
+    fun `포인트 조회에 성공한다`() {
+
+        //given
+        val point = PointFixture.get()
+        val pointCommandFixture = PointCommandFixture.get()
+        given(pointRepository.findBy(any())).willReturn(point)
+
+        //when
+        val returnedPoint = pointService.getPoint(pointCommandFixture)
+
+
+        //then
+        assertThat(returnedPoint)
+            .extracting("id", "point")
+            .contains(point.id, point.point)
+        verify(pointRepository, times(1)).findBy(any())
     }
 }
