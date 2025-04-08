@@ -16,4 +16,5 @@ enum class BusinessErrorCode(
     //상품
     PRODUCT_NOT_FOUND("PRODUCT-404", "존재하지 않는 상품 입니다.", 404),
     PRODUCT_OPTIONS_NOT_FOUND("PRODUCT-405", "상품 옵션이 존재하지 않습니다.", 404),
+    PRODUCTS_NOT_EXIST("PRODUCT-406", "조회 가능한 상품이 없습니다.", 404),
 }

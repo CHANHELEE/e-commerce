@@ -1,12 +1,11 @@
 package kr.hhplus.be.server.presentation.product
 
 import io.swagger.v3.oas.annotations.Operation
-import jakarta.validation.Valid
+import kr.hhplus.be.server.domain.common.model.PagingResult
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 import kr.hhplus.be.server.presentation.common.annotation.SuccessResponse
-import kr.hhplus.be.server.presentation.common.model.PagingRequest
-import kr.hhplus.be.server.presentation.common.model.PagingResponse
 import kr.hhplus.be.server.presentation.product.model.ProductResponse
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
@@ -67,8 +66,8 @@ class ProductController {
     )
     @GetMapping("")
     @SuccessResponse
-    fun products(@ModelAttribute @Valid pagingRequest: PagingRequest): PagingResponse<ProductResponse.Product> =
-        PagingResponse(
+    fun products(pageable: Pageable): PagingResult<ProductResponse.Product> =
+        PagingResult(
             1,
             1,
             1,

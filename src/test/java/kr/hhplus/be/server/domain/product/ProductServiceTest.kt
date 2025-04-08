@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.product
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
+import kr.hhplus.be.server.domain.common.model.PagingResult
 import kr.hhplus.be.server.fixtures.product.*
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -15,6 +16,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.data.domain.PageRequest
 
 @ExtendWith(MockitoExtension::class)
 class ProductServiceTest {
@@ -122,6 +124,65 @@ class ProductServiceTest {
             //then
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.PRODUCT_OPTIONS_NOT_FOUND)
             verify(productRepository, times(1)).findAllDetailsBy(productCommand.productId)
+
+        }
+    }
+
+    @Nested
+    inner class Products {
+
+        @Test
+        fun `상품목록을 조회 한다`() {
+
+            //given
+            val pageable = PageRequest.of(1, 10)
+            val products = listOf(
+                ProductFixture.get(1L),
+                ProductFixture.get(2L),
+            )
+            val pagingResult = PagingResult(1, 1, 2, products)
+            given(productRepository.findAllBy(pageable)).willReturn(pagingResult)
+
+            //when
+            val returnedProduct = productService.getProductsBy(pageable)
+
+            //then
+            assertThat(returnedProduct.currentPage).isEqualTo(pagingResult.currentPage)
+            assertThat(returnedProduct.totalPages).isEqualTo(pagingResult.totalPages)
+            assertThat(returnedProduct.totalElements).isEqualTo(pagingResult.totalElements)
+            assertThat(returnedProduct.data)  // 상품 리스트에 대해 검증
+                .extracting("id", "name", "price")
+                .containsExactlyInAnyOrder(
+                    Assertions.tuple(
+                        products[0].id,
+                        products[0].name,
+                        products[0].price
+                    ),
+                    Assertions.tuple(
+                        products[1].id,
+                        products[1].name,
+                        products[1].price
+                    )
+                )
+            verify(productRepository, times(1)).findAllBy(pageable)
+        }
+
+        @Test
+        fun `상품 목록이 존재하지 않을 시 Business 예외(PRODUCTS_NOT_EXIST)가 발생한다 `() {
+
+            //given
+            val pageable = PageRequest.of(1, 10)
+            val pagingResult = null
+            given(productRepository.findAllBy(pageable)).willReturn(pagingResult)
+
+            //when
+            val exception = assertThrows<BusinessException> {
+                productService.getProductsBy(pageable)
+            }
+
+            //then
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.PRODUCTS_NOT_EXIST)
+            verify(productRepository, times(1)).findAllBy(pageable)
 
         }
     }
