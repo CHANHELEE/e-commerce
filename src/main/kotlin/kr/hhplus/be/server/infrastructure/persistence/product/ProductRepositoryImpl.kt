@@ -2,16 +2,16 @@ package kr.hhplus.be.server.infrastructure.persistence.product
 
 import kr.hhplus.be.server.domain.product.ProductRepository
 import kr.hhplus.be.server.domain.product.model.Product
-import kr.hhplus.be.server.domain.product.model.ProductOption
+import kr.hhplus.be.server.domain.product.model.ProductDetailView
 import org.springframework.stereotype.Repository
 
 @Repository
 class ProductRepositoryImpl : ProductRepository {
-    override fun findById(id: Long): Product? {
+    override fun findBy(id: Long): Product? {
         TODO("Not yet implemented")
     }
 
-    override fun findAllOptionsBy(productId: Long): List<ProductOption>? {
+    override fun findAllDetailsBy(productId: Long): List<ProductDetailView>? {
         TODO("Not yet implemented")
     }
 }

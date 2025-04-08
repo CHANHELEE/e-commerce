@@ -2,10 +2,7 @@ package kr.hhplus.be.server.domain.product
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
-import kr.hhplus.be.server.fixtures.product.ProductCommandFixture
-import kr.hhplus.be.server.fixtures.product.ProductFixture
-import kr.hhplus.be.server.fixtures.product.ProductOptionCommandFixture
-import kr.hhplus.be.server.fixtures.product.ProductOptionFixture
+import kr.hhplus.be.server.fixtures.product.*
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -37,7 +34,7 @@ class ProductServiceTest {
             //given
             val productCommand = ProductCommandFixture.get()
             val product = ProductFixture.get()
-            given(productRepository.findById(productCommand.productId)).willReturn(product)
+            given(productRepository.findBy(productCommand.productId)).willReturn(product)
 
             //when
             val returnedProductEntity = productService.getProductBy(productCommand)
@@ -46,7 +43,7 @@ class ProductServiceTest {
             assertThat(returnedProductEntity)
                 .extracting("id", "name", "price")
                 .contains(product.id, product.name, product.price)
-            verify(productRepository, times(1)).findById(productCommand.productId)
+            verify(productRepository, times(1)).findBy(productCommand.productId)
         }
 
         @Test
@@ -55,7 +52,7 @@ class ProductServiceTest {
             //given
             val productCommand = ProductCommandFixture.get()
             val productEntity = null
-            given(productRepository.findById(productCommand.productId)).willReturn(productEntity)
+            given(productRepository.findBy(productCommand.productId)).willReturn(productEntity)
 
             //when
             val exception = assertThrows<BusinessException> {
@@ -64,7 +61,7 @@ class ProductServiceTest {
 
             //then
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.PRODUCT_NOT_FOUND)
-            verify(productRepository, times(1)).findById(productCommand.productId)
+            verify(productRepository, times(1)).findBy(productCommand.productId)
 
         }
     }
@@ -78,10 +75,10 @@ class ProductServiceTest {
             //given
             val productCommand = ProductOptionCommandFixture.get()
             val productOptions = listOf(
-                ProductOptionFixture.get(1L),
-                ProductOptionFixture.get(2L),
+                ProductDetailViewFixture.get(1L),
+                ProductDetailViewFixture.get(2L),
             )
-            given(productRepository.findAllOptionsBy(productCommand.productId)).willReturn(productOptions)
+            given(productRepository.findAllDetailsBy(productCommand.productId)).willReturn(productOptions)
 
             //when
             val returnedProduct = productService.getProductOptionsBy(productCommand)
@@ -106,7 +103,7 @@ class ProductServiceTest {
                         productOptions[1].stock
                     )
                 )
-            verify(productRepository, times(1)).findAllOptionsBy(productCommand.productId)
+            verify(productRepository, times(1)).findAllDetailsBy(productCommand.productId)
         }
 
         @Test
@@ -115,7 +112,7 @@ class ProductServiceTest {
             //given
             val productCommand = ProductOptionCommandFixture.get()
             val productEntity = null
-            given(productRepository.findAllOptionsBy(productCommand.productId)).willReturn(productEntity)
+            given(productRepository.findAllDetailsBy(productCommand.productId)).willReturn(productEntity)
 
             //when
             val exception = assertThrows<BusinessException> {
@@ -124,7 +121,7 @@ class ProductServiceTest {
 
             //then
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.PRODUCT_OPTIONS_NOT_FOUND)
-            verify(productRepository, times(1)).findAllOptionsBy(productCommand.productId)
+            verify(productRepository, times(1)).findAllDetailsBy(productCommand.productId)
 
         }
     }

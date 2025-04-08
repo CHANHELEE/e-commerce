@@ -2,19 +2,16 @@ package kr.hhplus.be.server.domain.product.model
 
 import java.time.LocalDateTime
 
-data class Product(
-    val id: Long,
-    var name: String,
-    var price: Long,
-    var createdAt: LocalDateTime,
-    var updatedAt: LocalDateTime,
-)
+class Product(
+    var id: Long? = null,
+    name: String,
+    price: Long,
+    var createdAt: LocalDateTime? = null,
+    var updatedAt: LocalDateTime? = null,
+) {
+    var name: String = name
+        private set
 
-
-data class ProductOption(
-    val productId: Long,
-    var name: String,
-    var price: Long,
-    var size: String,
-    var stock: Long,
-)
+    var price: Long = price
+        private set
+}

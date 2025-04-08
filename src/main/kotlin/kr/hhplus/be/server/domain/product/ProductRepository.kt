@@ -1,11 +1,11 @@
 package kr.hhplus.be.server.domain.product
 
 import kr.hhplus.be.server.domain.product.model.Product
-import kr.hhplus.be.server.domain.product.model.ProductOption
+import kr.hhplus.be.server.domain.product.model.ProductDetailView
 
 interface ProductRepository {
 
-    fun findById(id: Long): Product?
+    fun findBy(id: Long): Product?
 
-    fun findAllOptionsBy(productId: Long): List<ProductOption>?
+    fun findAllDetailsBy(productId: Long): List<ProductDetailView>?
 }
