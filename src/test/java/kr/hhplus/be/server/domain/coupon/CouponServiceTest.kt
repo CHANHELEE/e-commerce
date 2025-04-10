@@ -1,4 +1,5 @@
 package kr.hhplus.be.server.domain.coupon
+
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.coupon.model.UserCoupon
 import kr.hhplus.be.server.common.BusinessException
@@ -153,6 +154,57 @@ class CouponServiceTest {
             }
 
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.COUPON_NOT_EXIST)
+        }
+    }
+
+    @Nested
+    inner class Issue {
+
+        @Test
+        fun `쿠폰이 존재하고 수량이 남아있으면 사용자 쿠폰이 정상 발급된다`() {
+            // given
+            val coupon = Coupon(id = 1L, name = "할인쿠폰", amount = 5L, discountPrice = 1000L)
+            val userCoupon = UserCoupon(id = 1L, userId = 10L, couponId = 1L)
+            val command = CouponCommand.Issue(userId = 10L, couponId = 1L)
+
+            given(couponRepository.findCouponWithLockBy(1L)).willReturn(coupon)
+            given(couponRepository.saveUserCoupon(any())).willReturn(userCoupon)
+
+            // when
+            val result = couponService.issue(command)
+
+            // then
+            assertThat(result).isEqualTo(userCoupon)
+            assertThat(coupon.amount).isEqualTo(4L) // issue()로 인해 감소 확인
+        }
+
+        @Test
+        fun `쿠폰이 존재하지 않으면 예외가 발생한다`() {
+            // given
+            val command = CouponCommand.Issue(userId = 10L, couponId = 999L)
+            given(couponRepository.findCouponWithLockBy(999L)).willReturn(null)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                couponService.issue(command)
+            }
+
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.COUPON_NOT_EXIST)
+        }
+
+        @Test
+        fun `쿠폰 수량이 0이면 BusinessException(COUPON_OUT_OF_AMOUNT)예외가 발생한다`() {
+            // given
+            val coupon = Coupon(id = 1L, name = "할인쿠폰", amount = 0L, discountPrice = 1000L)
+            val command = CouponCommand.Issue(userId = 10L, couponId = 1L)
+            given(couponRepository.findCouponWithLockBy(1L)).willReturn(coupon)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                couponService.issue(command)
+            }
+
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.COUPON_OUT_OF_AMOUNT)
         }
     }
 }

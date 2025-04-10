@@ -17,4 +17,9 @@ class CouponCommand {
     data class Coupon(
         val couponId: Long,
     )
+
+    data class Issue(
+        val couponId: Long,
+        val userId: Long,
+    )
 }
