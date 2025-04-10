@@ -31,9 +31,4 @@ class OrderRequest {
         @field:NotNull(message = "상품 수량 값(quantity)은 필수입니다.")
         val quantity: Long?,
     )
-
-    data class Payment(
-        val userId: Long,
-        val orderId: Long,
-    )
 }

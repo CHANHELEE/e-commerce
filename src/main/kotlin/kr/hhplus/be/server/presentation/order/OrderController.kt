@@ -64,19 +64,4 @@ class OrderController {
             1L,
             listOf(OrderResponse.OrderedProduct(1L, 1L, 20L))
         )
-
-
-
-    @Operation(
-        summary = "주문 결제", responses = [SwaggerApiResponse(
-            responseCode = "200", description = "주문 결제"
-        )]
-    )
-    @PostMapping("/{orderId}/payment")
-    @SuccessResponse
-    fun pay(
-        @RequestBody request: OrderRequest.Payment,
-    ): OrderResponse.Payment =
-        OrderResponse.Payment(1L, 1L)
-
 }
