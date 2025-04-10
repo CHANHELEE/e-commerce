@@ -34,4 +34,7 @@ enum class BusinessErrorCode(
     //주문
     ORDER_NOT_EXIST("ORDER-404", "조회 가능한 주문이 없습니다.", 404),
     ORDER_PRODUCT_NOT_EXIST("ORDER-PRODUCT-404", "조회 가능한 주문 상품이 없습니다.", 404),
+
+    //통계
+    POPULAR_PRODUCTS_NOT_EXIST("STATISTIC-PRODUCT-404", "조회 가능한 인기 상품이 없습니다.", 404),
 }

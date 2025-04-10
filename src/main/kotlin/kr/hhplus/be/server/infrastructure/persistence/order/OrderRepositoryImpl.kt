@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.order.model.Order
 import kr.hhplus.be.server.domain.order.model.OrderHistory
 import kr.hhplus.be.server.domain.order.model.OrderProduct
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class OrderRepositoryImpl : OrderRepository {
@@ -27,6 +28,10 @@ class OrderRepositoryImpl : OrderRepository {
     }
 
     override fun findAllActiveOrderProductsBy(orderId: Long): List<OrderProduct>? {
+        TODO("Not yet implemented")
+    }
+
+    override fun findTop5BestProduct(from: LocalDateTime): List<OrderProduct>? {
         TODO("Not yet implemented")
     }
 }
