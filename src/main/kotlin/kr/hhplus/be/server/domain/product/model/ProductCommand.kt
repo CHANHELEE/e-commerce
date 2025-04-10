@@ -6,6 +6,11 @@ class ProductCommand {
         val productId: Long,
     )
 
+    data class ProductStock(
+        val productId: Long,
+        val optionId: Long,
+    )
+
     data class ProductOption(
         val productId: Long,
     )

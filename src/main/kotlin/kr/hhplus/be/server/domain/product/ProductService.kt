@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.common.model.PagingResult
 import kr.hhplus.be.server.domain.product.model.Product
 import kr.hhplus.be.server.domain.product.model.ProductCommand
 import kr.hhplus.be.server.domain.product.model.ProductDetailView
+import kr.hhplus.be.server.domain.product.model.ProductStock
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
@@ -25,4 +26,8 @@ class ProductService(
     fun getProductsBy(pageable: Pageable): PagingResult<Product> =
         productRepository.findAllBy(pageable)
             ?: throw BusinessException(BusinessErrorCode.PRODUCTS_NOT_EXIST)
+
+    fun getProductStockBy(productCommand: ProductCommand.ProductStock): ProductStock =
+        productRepository.findStockBy(productCommand.productId, productCommand.optionId)
+            ?: throw BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND)
 }

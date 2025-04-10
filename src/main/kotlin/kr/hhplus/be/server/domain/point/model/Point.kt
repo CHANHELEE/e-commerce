@@ -34,4 +34,11 @@ class Point(
 
         point = chargedPoint
     }
+
+    fun validateUsable() {
+
+        require(point > 0) {
+            throw BusinessException(BusinessErrorCode.POINT_NOT_ENOUGH)
+        }
+    }
 }

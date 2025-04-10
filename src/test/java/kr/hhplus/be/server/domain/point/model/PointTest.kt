@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.point.model
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
+import kr.hhplus.be.server.fixtures.point.PointFixture
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -60,5 +61,18 @@ class PointTest {
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.EXCEED_POINT_LIMIT)
         }
 
+    }
+
+    @Test
+    fun `사용시 포인트가 0이면 POINT_NOT_ENOUGH 예외가 발생한다`() {
+        val point = PointFixture.get(point = 0)
+
+        //when
+        val exception = assertThrows<BusinessException> {
+            point.validateUsable()
+        }
+
+        //then
+        assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.POINT_NOT_ENOUGH)
     }
 }
