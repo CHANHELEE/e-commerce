@@ -75,4 +75,33 @@ class PointTest {
         //then
         assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.POINT_NOT_ENOUGH)
     }
+
+    @Nested
+    inner class Use {
+
+        @Test
+        fun `포인트가 충분하면 정상 차감된다`() {
+            // given
+            val point = Point(userId = 1L, point = 500L)
+
+            // when
+            point.use(100L)
+
+            // then
+            assertThat(point.point).isEqualTo(400L)
+        }
+
+        @Test
+        fun `포인트 차감 후 0미만이 되면 BusinessException(POINT_NOT_ENOUGH)예외가 발생한다`() {
+            // given
+            val point = Point(userId = 1L, point = 90L)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                point.use(100L)
+            }
+
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.POINT_NOT_ENOUGH)
+        }
+    }
 }

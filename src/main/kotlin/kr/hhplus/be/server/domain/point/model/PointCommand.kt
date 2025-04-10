@@ -10,4 +10,9 @@ class PointCommand {
     data class Point(
         val userId: Long,
     )
+
+    data class Update(
+        val userId: Long,
+        val amount: Long,
+    )
 }

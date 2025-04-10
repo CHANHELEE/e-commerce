@@ -29,4 +29,9 @@ enum class BusinessErrorCode(
     //쿠폰
     USER_COUPON_NOT_EXIST("USER-COUPON-404", "해당 사용자 쿠폰을 조회할 수 없습니다.", 404),
     USER_COUPON_ALREADY_USED("USER-COUPON-400", "해당 사용자 쿠폰은 이미 사용되었습니다.", 400),
+    COUPON_NOT_EXIST("COUPON-404", "해당 쿠폰을 조회할 수 없습니다.", 404),
+
+    //주문
+    ORDER_NOT_EXIST("ORDER-404", "조회 가능한 주문이 없습니다.", 404),
+    ORDER_PRODUCT_NOT_EXIST("ORDER-PRODUCT-404", "조회 가능한 주문 상품이 없습니다.", 404),
 }

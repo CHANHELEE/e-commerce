@@ -38,4 +38,22 @@ class PointService(
         pointRepository.findBy(pointCommand.userId)
             ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
 
+    @Transactional
+    fun usePoint(pointCommand: PointCommand.Update): Point {
+
+        var userPoint = pointRepository.findUserPointWithLockBy(pointCommand.userId)
+            ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
+        userPoint.use(pointCommand.amount)
+        userPoint = pointRepository.updatePoint(userPoint)
+
+        val pointHistory =
+            PointHistory(
+                pointId = userPoint.id!!,
+                point = pointCommand.amount,
+                type = PointHistoryType.USE,
+                createdAt = userPoint.createdAt
+            )
+        pointRepository.savePointHistory(pointHistory)
+        return userPoint
+    }
 }

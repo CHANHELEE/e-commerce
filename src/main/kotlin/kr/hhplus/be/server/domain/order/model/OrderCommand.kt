@@ -22,4 +22,8 @@ class OrderCommand {
         var productPrice: Long,
         var quantity: Long,
     )
+
+    data class Order(
+        val orderId: Long,
+    )
 }

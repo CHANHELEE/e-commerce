@@ -14,4 +14,9 @@ class ProductCommand {
     data class ProductOption(
         val productId: Long,
     )
+
+    data class UpdateStock(
+        val stockId: Long,
+        val stock: Long,
+    )
 }

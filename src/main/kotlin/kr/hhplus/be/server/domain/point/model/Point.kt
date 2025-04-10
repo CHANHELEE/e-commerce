@@ -41,4 +41,12 @@ class Point(
             throw BusinessException(BusinessErrorCode.POINT_NOT_ENOUGH)
         }
     }
+
+    fun use(amount: Long) {
+
+        point -= amount
+        require(point >= 0) {
+            throw BusinessException(BusinessErrorCode.POINT_NOT_ENOUGH)
+        }
+    }
 }

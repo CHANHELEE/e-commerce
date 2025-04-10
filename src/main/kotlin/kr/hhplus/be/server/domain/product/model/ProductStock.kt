@@ -13,9 +13,17 @@ class ProductStock(
     var updatedAt: LocalDateTime = LocalDateTime.now(),
 ) {
 
-    fun validateStockForOrder() {
+    fun validateStock() {
 
         require(stock > 0) {
+            throw BusinessException(BusinessErrorCode.PRODUCT_STOCK_OUT_OF_STOCK)
+        }
+    }
+
+    fun decreaseStock(quantity: Long) {
+
+        stock -= quantity
+        require(stock >= 0) {
             throw BusinessException(BusinessErrorCode.PRODUCT_STOCK_OUT_OF_STOCK)
         }
     }

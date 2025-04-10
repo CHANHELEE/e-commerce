@@ -42,7 +42,7 @@ class OrderFacade(
                     optionId = orderedProduct.productOptionId!!
                 )
             )
-            stock.validateStockForOrder()
+            stock.validateStock()
 
             val product = productService.getProductBy(ProductCommand.Product(orderedProduct.productId))
             val price = product.price

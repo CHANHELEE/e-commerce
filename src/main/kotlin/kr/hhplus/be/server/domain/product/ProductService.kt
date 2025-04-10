@@ -3,10 +3,7 @@ package kr.hhplus.be.server.domain.product
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.common.model.PagingResult
-import kr.hhplus.be.server.domain.product.model.Product
-import kr.hhplus.be.server.domain.product.model.ProductCommand
-import kr.hhplus.be.server.domain.product.model.ProductDetailView
-import kr.hhplus.be.server.domain.product.model.ProductStock
+import kr.hhplus.be.server.domain.product.model.*
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
@@ -30,4 +27,11 @@ class ProductService(
     fun getProductStockBy(productCommand: ProductCommand.ProductStock): ProductStock =
         productRepository.findStockBy(productCommand.productId, productCommand.optionId)
             ?: throw BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND)
+
+    fun getProductStockWithLockBy(productCommand: ProductCommand.ProductStock): ProductStock =
+        productRepository.findStockWithLockBy(productCommand.productId, productCommand.optionId)
+            ?: throw BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND)
+
+    fun updateStock(productCommand: ProductCommand.UpdateStock): ProductStock =
+        productRepository.updateStock(UpdateProductStock(productCommand.stockId, productCommand.stock))
 }

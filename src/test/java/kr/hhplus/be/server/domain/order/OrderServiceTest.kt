@@ -1,9 +1,13 @@
 package kr.hhplus.be.server.domain.order
 
+import kr.hhplus.be.server.common.BusinessException
+import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
 import kr.hhplus.be.server.domain.order.model.*
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -115,5 +119,73 @@ class OrderServiceTest {
             assertThat(first.quantity).isEqualTo(expectedFirst.quantity)
             assertThat(first.orderId).isEqualTo(expectedFirst.orderId)
         })
+    }
+
+    @Nested
+    inner class GetWithLockBy {
+
+        @Test
+        fun `주문이 존재하면 반환한다`() {
+            // given
+            val order = Order(id = 1L, userId = 10L, status = OrderStatus.PENDING)
+            given(orderRepository.findWithLockBy(1L)).willReturn(order)
+
+            // when
+            val result = orderService.getWithLockBy(OrderCommand.Order(orderId = 1L))
+
+            // then
+            assertThat(result).isEqualTo(order)
+        }
+
+        @Test
+        fun `주문이 존재하지 않으면 예외를 던진다`() {
+            // given
+            given(orderRepository.findWithLockBy(1L)).willReturn(null)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                orderService.getWithLockBy(OrderCommand.Order(orderId = 1L))
+            }
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.ORDER_NOT_EXIST)
+        }
+    }
+
+    @Nested
+    inner class GetAllActiveOrderProductsBy {
+
+        @Test
+        fun `활성 주문 상품이 존재하면 반환한다`() {
+            // given
+            val products = listOf(
+                OrderProduct(
+                    id = 1L,
+                    orderId = 1L,
+                    productOptionId = 100L,
+                    productId = 200L,
+                    productPrice = 5000L,
+                    quantity = 2L
+                )
+            )
+            given(orderRepository.findAllActiveOrderProductsBy(1L)).willReturn(products)
+
+            // when
+            val result = orderService.getAllActiveOrderProductsBy(OrderCommand.Order(orderId = 1L))
+
+            // then
+            assertThat(result).hasSize(1)
+            assertThat(result[0].productId).isEqualTo(200L)
+        }
+
+        @Test
+        fun `활성 주문 상품이 없으면 예외를 던진다`() {
+            // given
+            given(orderRepository.findAllActiveOrderProductsBy(1L)).willReturn(null)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                orderService.getAllActiveOrderProductsBy(OrderCommand.Order(orderId = 1L))
+            }
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.ORDER_PRODUCT_NOT_EXIST)
+        }
     }
 }

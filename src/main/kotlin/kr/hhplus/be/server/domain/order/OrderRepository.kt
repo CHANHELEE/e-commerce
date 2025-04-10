@@ -12,4 +12,8 @@ interface OrderRepository {
     fun saveHistory(orderHistory: OrderHistory): OrderHistory
 
     fun saveAllOrderProducts(orderProducts: List<OrderProduct>): Boolean
+
+    fun findWithLockBy(orderId: Long): Order?
+    
+    fun findAllActiveOrderProductsBy(orderId: Long): List<OrderProduct>?
 }

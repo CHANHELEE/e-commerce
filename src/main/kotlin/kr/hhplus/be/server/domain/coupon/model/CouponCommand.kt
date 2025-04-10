@@ -10,8 +10,11 @@ class CouponCommand {
     )
 
     data class UseCoupon(
-        val couponId: Long,
-        val userId: Long,
+        val userCouponId: Long,
         val usedAt: LocalDateTime
+    )
+
+    data class Coupon(
+        val couponId: Long,
     )
 }

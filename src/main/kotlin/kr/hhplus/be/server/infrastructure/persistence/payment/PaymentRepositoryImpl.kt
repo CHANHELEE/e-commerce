@@ -1,0 +1,22 @@
+package kr.hhplus.be.server.infrastructure.persistence.payment
+
+
+import kr.hhplus.be.server.domain.order.OrderRepository
+import kr.hhplus.be.server.domain.order.model.Order
+import kr.hhplus.be.server.domain.order.model.OrderHistory
+import kr.hhplus.be.server.domain.order.model.OrderProduct
+import kr.hhplus.be.server.domain.payment.PaymentRepository
+import kr.hhplus.be.server.domain.payment.model.Payment
+import kr.hhplus.be.server.domain.payment.model.PaymentHistory
+import org.springframework.stereotype.Repository
+
+@Repository
+class PaymentRepositoryImpl : PaymentRepository {
+    override fun save(payment: Payment): Payment {
+        TODO("Not yet implemented")
+    }
+
+    override fun saveHistory(paymentHistory: PaymentHistory): PaymentHistory {
+        TODO("Not yet implemented")
+    }
+}

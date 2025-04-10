@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.order
 
+import kr.hhplus.be.server.common.BusinessException
+import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.order.model.Order
 import kr.hhplus.be.server.domain.order.model.OrderCommand
 import kr.hhplus.be.server.domain.order.model.OrderHistory
@@ -41,4 +43,12 @@ class OrderService(
             )
         })
     }
+
+    fun getWithLockBy(orderCommand: OrderCommand.Order): Order =
+        orderRepository.findWithLockBy(orderCommand.orderId)
+            ?: throw BusinessException(BusinessErrorCode.ORDER_NOT_EXIST)
+
+    fun getAllActiveOrderProductsBy(orderCommand: OrderCommand.Order): List<OrderProduct> =
+        orderRepository.findAllActiveOrderProductsBy(orderCommand.orderId)
+            ?: throw BusinessException(BusinessErrorCode.ORDER_PRODUCT_NOT_EXIST)
 }

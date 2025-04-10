@@ -24,4 +24,8 @@ class PointRepositoryImpl : PointRepository {
     override fun findBy(userId: Long): Point? {
         TODO("Not yet implemented")
     }
+
+    override fun updatePoint(point: Point): Point {
+        TODO("Not yet implemented")
+    }
 }
