@@ -33,7 +33,7 @@ class CouponServiceTest {
         fun `사용자 쿠폰이 존재하면 반환된다`() {
             // given
             val userCoupon = UserCoupon(id = 1L, userId = userId, couponId = couponId, usedAt = null)
-            given(couponRepository.findUserCouponWithLockBy(userId, couponId)).willReturn(userCoupon)
+            given(couponRepository.findUserCouponBy(userId, couponId)).willReturn(userCoupon)
 
             // when
             val result = couponService.getUserCouponBy(command)
@@ -45,7 +45,7 @@ class CouponServiceTest {
         @Test
         fun `사용자 쿠폰이 존재하지 않으면 BusinessException(USER_COUPON_NOT_EXIST)예외가 발생한다`() {
             // given
-            given(couponRepository.findUserCouponWithLockBy(userId, couponId)).willReturn(null)
+            given(couponRepository.findUserCouponBy(userId, couponId)).willReturn(null)
 
             // when & then
             val exception = assertThrows<BusinessException> {

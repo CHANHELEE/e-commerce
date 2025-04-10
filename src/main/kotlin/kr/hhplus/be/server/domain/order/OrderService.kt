@@ -37,6 +37,7 @@ class OrderService(
                 orderId = it.orderId,
                 productPrice = it.productPrice,
                 quantity = it.quantity,
+                productId = it.productId,
             )
         })
     }

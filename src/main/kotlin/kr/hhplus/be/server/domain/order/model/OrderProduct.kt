@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 class OrderProduct(
     val id: Long = 0,
     val productOptionId: Long,
+    val productId: Long,
     val orderId: Long,
     val productPrice: Long,
     var quantity: Long,

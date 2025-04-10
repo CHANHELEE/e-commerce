@@ -51,7 +51,8 @@ class OrderFacade(
                 productOptionId = orderedProduct.productOptionId,
                 orderId = 0L,
                 productPrice = price,
-                quantity = orderedProduct.quantity
+                quantity = orderedProduct.quantity,
+                productId = orderedProduct.productId,
             )
         }
 

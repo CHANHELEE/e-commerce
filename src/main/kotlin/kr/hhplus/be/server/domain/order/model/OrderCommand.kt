@@ -17,6 +17,7 @@ class OrderCommand {
 
     data class PlaceOrderProduct(
         var productOptionId: Long,
+        var productId: Long,
         var orderId: Long,
         var productPrice: Long,
         var quantity: Long,

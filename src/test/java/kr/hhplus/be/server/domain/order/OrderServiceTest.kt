@@ -89,13 +89,15 @@ class OrderServiceTest {
                 productOptionId = 10L,
                 orderId = 1L,
                 productPrice = 1000L,
-                quantity = 2L
+                quantity = 2L,
+                productId = 2
             ),
             OrderCommand.PlaceOrderProduct(
                 productOptionId = 20L,
                 orderId = 1L,
                 productPrice = 2000L,
-                quantity = 1L
+                quantity = 1L,
+                productId = 3
             )
         )
 
