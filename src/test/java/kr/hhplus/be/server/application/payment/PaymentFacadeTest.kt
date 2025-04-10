@@ -23,10 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.check
-import org.mockito.kotlin.given
-import org.mockito.kotlin.then
+import org.mockito.kotlin.*
 import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -100,7 +97,7 @@ class PaymentFacadeTest {
         )
 
         given(orderService.getWithLockBy(OrderCommand.Order(orderId))).willReturn(order)
-        given(couponService.getUserCouponBy(CouponCommand.UserCoupon(userId, couponId))).willReturn(userCoupon)
+        given(couponService.getUserCouponWithLockBy(CouponCommand.UserCoupon(userId, couponId))).willReturn(userCoupon)
         given(couponService.updateUserCoupon(any())).willReturn(userCoupon)
         given(couponService.getCouponBy(CouponCommand.Coupon(couponId))).willReturn(coupon)
         given(orderService.getAllActiveOrderProductsBy(OrderCommand.Order(orderId))).willReturn(listOf(orderProduct))
@@ -126,5 +123,15 @@ class PaymentFacadeTest {
 
         assertThat(result.orderId).isEqualTo(orderId)
         assertThat(result.payTotalPrice).isEqualTo(9000L)
+
+        verify(orderService, times(1)).getWithLockBy(OrderCommand.Order(orderId))
+        verify(couponService, times(1)).getUserCouponWithLockBy(CouponCommand.UserCoupon(userId, couponId))
+        verify(couponService, times(1)).updateUserCoupon(any())
+        verify(couponService, times(1)).getCouponBy(CouponCommand.Coupon(couponId))
+        verify(orderService, times(1)).getAllActiveOrderProductsBy(OrderCommand.Order(orderId))
+        verify(productService, times(1)).getProductStockWithLockBy(any())
+        verify(productService, times(1)).getProductBy(any())
+        verify(pointService, times(1)).usePoint(any())
+        verify(paymentService, times(1)).save(any())
     }
 }
