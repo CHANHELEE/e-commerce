@@ -12,7 +12,7 @@ class CouponService(
 ) {
 
     fun getUserCouponBy(couponCommand: CouponCommand.UserCoupon): UserCoupon =
-        couponRepository.findUserCouponWithLockBy(couponCommand.userId, couponCommand.couponId)
+        couponRepository.findUserCouponBy(couponCommand.userId, couponCommand.couponId)
             ?: throw BusinessException(BusinessErrorCode.USER_COUPON_NOT_EXIST)
 
     fun getUserCouponWithLockBy(couponCommand: CouponCommand.UserCoupon): UserCoupon =
