@@ -28,4 +28,8 @@ class CouponRepositoryImpl : CouponRepository {
     override fun findCouponBy(couponId: Long): Coupon? {
         TODO("Not yet implemented")
     }
+
+    override fun findCouponWithLockBy(userId: Long): Coupon? {
+        TODO("Not yet implemented")
+    }
 }

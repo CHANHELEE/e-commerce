@@ -5,7 +5,7 @@ import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import java.time.LocalDateTime
 
 class UserCoupon(
-    val id: Long,
+    val id: Long = 0,
     var couponId: Long,
     var userId: Long,
     var createdAt: LocalDateTime = LocalDateTime.now(),

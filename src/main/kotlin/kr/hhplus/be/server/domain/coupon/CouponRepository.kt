@@ -15,4 +15,6 @@ interface CouponRepository {
     fun updateUserCoupon(updateUserCoupon: UpdateUserCoupon): UserCoupon
 
     fun findCouponBy(couponId: Long): Coupon?
+
+    fun findCouponWithLockBy(couponId: Long): Coupon?
 }

@@ -27,4 +27,15 @@ class CouponService(
     fun getCouponBy(couponCommand: CouponCommand.Coupon): Coupon =
         couponRepository.findCouponBy(couponCommand.couponId)
             ?: throw BusinessException(BusinessErrorCode.COUPON_NOT_EXIST)
+
+    fun issue(couponCommand: CouponCommand.Issue): UserCoupon {
+
+        val coupon = couponRepository.findCouponWithLockBy(couponCommand.couponId)
+            ?: throw BusinessException(BusinessErrorCode.COUPON_NOT_EXIST)
+        coupon.issue()
+
+        val userCoupon =
+            couponRepository.saveUserCoupon(UserCoupon(couponId = coupon.id, userId = couponCommand.userId))
+        return userCoupon
+    }
 }
