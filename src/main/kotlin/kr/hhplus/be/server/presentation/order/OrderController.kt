@@ -38,30 +38,4 @@ class OrderController {
             null,
             listOf(OrderResponse.OrderedProduct(1L, 1L, 20L))
         )
-
-    @Operation(
-        summary = "주문 수정", responses = [
-            SwaggerApiResponse(
-                responseCode = "200", description = "주문 수정"
-            ),
-            SwaggerApiResponse(
-                responseCode = "400",
-                description = "잘못된 요청 - 필수값 누락 또는 유효성 검사 실패",
-                content = [
-                    io.swagger.v3.oas.annotations.media.Content(
-                        mediaType = "application/json",
-                        schema = io.swagger.v3.oas.annotations.media.Schema(implementation = kr.hhplus.be.server.presentation.common.ApiResponse::class)
-                    )
-                ]
-            )
-        ]
-    )
-    @PatchMapping("")
-    @SuccessResponse
-    fun order(@RequestBody @Valid orderRequest: OrderRequest.PatchOrder): OrderResponse.Order =
-        OrderResponse.Order(
-            1L,
-            1L,
-            listOf(OrderResponse.OrderedProduct(1L, 1L, 20L))
-        )
 }
