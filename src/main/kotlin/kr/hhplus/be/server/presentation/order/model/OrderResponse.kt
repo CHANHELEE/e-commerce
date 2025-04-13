@@ -13,9 +13,4 @@ class OrderResponse {
         val productOptionId: Long,
         val quantity: Long,
     )
-
-    data class Payment(
-        val userId: Long,
-        val orderId: Long,
-    )
 }

@@ -1,0 +1,20 @@
+package kr.hhplus.be.server.domain.coupon.model
+
+import java.time.LocalDateTime
+
+class CouponCommand {
+
+    data class UserCoupon(
+        val userId: Long,
+        val couponId: Long,
+    )
+
+    data class UseCoupon(
+        val userCouponId: Long,
+        val usedAt: LocalDateTime
+    )
+
+    data class Coupon(
+        val couponId: Long,
+    )
+}

@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.presentation.common.annotation
 
-import kr.hhplus.be.server.presentation.common.enums.BusinessSuccessCode
+import kr.hhplus.be.server.common.enums.BusinessSuccessCode
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)

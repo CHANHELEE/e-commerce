@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.presentation.common
 
-import kr.hhplus.be.server.presentation.common.enums.BusinessSuccessCode
+import kr.hhplus.be.server.common.enums.BusinessSuccessCode
 
 data class ApiResponse<T>(
     val status: Int,

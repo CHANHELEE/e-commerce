@@ -1,9 +1,11 @@
 package kr.hhplus.be.server.presentation.user
 
 import io.swagger.v3.oas.annotations.Operation
+import kr.hhplus.be.server.domain.common.model.PagingResult
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 import kr.hhplus.be.server.presentation.common.annotation.SuccessResponse
 import kr.hhplus.be.server.presentation.user.model.UserResponse
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
@@ -51,10 +53,15 @@ class UserController {
     )
     @GetMapping("{userId}/coupons")
     @SuccessResponse
-    fun coupons(@PathVariable userId: Long): List<UserResponse.Coupons> =
-        listOf(
-            UserResponse.Coupons(userId, 1L, "테스트 쿠폰1", LocalDateTime.now()),
-            UserResponse.Coupons(userId, 2L, "테스트 쿠폰2"),
+    fun coupons(@PathVariable userId: Long, pageable: Pageable): PagingResult<UserResponse.Coupons> =
+        PagingResult(
+            1,
+            1,
+            2,
+            listOf(
+                UserResponse.Coupons(userId, 1L, "테스트 쿠폰1", LocalDateTime.now()),
+                UserResponse.Coupons(userId, 2L, "테스트 쿠폰2"),
+            )
         )
 
 }

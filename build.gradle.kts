@@ -59,6 +59,9 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	dependencies {
+		testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+	}
 
 	// Swagger (springdoc-openapi)
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
@@ -71,4 +74,8 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 	systemProperty("user.timezone", "UTC")
+}
+
+tasks.test {
+	outputs.upToDateWhen { false }
 }
