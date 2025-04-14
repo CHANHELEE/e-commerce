@@ -1,8 +1,9 @@
 package kr.hhplus.be.server.domain.payment
 
-import kr.hhplus.be.server.domain.payment.model.Payment
+import kr.hhplus.be.server.domain.payment.model.entity.Payment
 import kr.hhplus.be.server.domain.payment.model.PaymentCommand
-import kr.hhplus.be.server.domain.payment.model.PaymentHistory
+import kr.hhplus.be.server.domain.payment.model.PaymentView
+import kr.hhplus.be.server.domain.payment.model.entity.PaymentHistory
 import org.springframework.stereotype.Service
 
 @Service
@@ -10,7 +11,7 @@ class PaymentService(
     private val paymentRepository: PaymentRepository
 ) {
 
-    fun save(paymentCommand: PaymentCommand.PlacePayment): Payment {
+    fun save(paymentCommand: PaymentCommand.PlacePayment): PaymentView {
 
         val payment = paymentRepository.save(
             Payment(
@@ -29,6 +30,6 @@ class PaymentService(
                 discountPrice = paymentCommand.discountPrice
             )
         )
-        return payment
+        return PaymentView.from(payment)
     }
 }

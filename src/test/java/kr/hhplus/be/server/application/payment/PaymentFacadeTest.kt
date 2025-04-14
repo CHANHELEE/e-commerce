@@ -7,13 +7,12 @@ import kr.hhplus.be.server.domain.coupon.model.CouponView
 import kr.hhplus.be.server.domain.coupon.model.UserCouponView
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
-import kr.hhplus.be.server.domain.order.model.entity.Order
 import kr.hhplus.be.server.domain.order.model.OrderCommand
 import kr.hhplus.be.server.domain.order.model.OrderProductView
 import kr.hhplus.be.server.domain.order.model.OrderView
-import kr.hhplus.be.server.domain.order.model.entity.OrderProduct
 import kr.hhplus.be.server.domain.payment.PaymentService
-import kr.hhplus.be.server.domain.payment.model.Payment
+import kr.hhplus.be.server.domain.payment.model.PaymentView
+import kr.hhplus.be.server.domain.payment.model.entity.Payment
 import kr.hhplus.be.server.domain.point.PointService
 import kr.hhplus.be.server.domain.product.ProductService
 import kr.hhplus.be.server.domain.product.model.ProductStockView
@@ -117,7 +116,7 @@ class PaymentFacadeTest {
             updatedAt = LocalDateTime.now(),
         )
 
-        val savedPayment = Payment(
+        val savedPayment = PaymentView(
             id = 1L,
             orderId = orderId,
             originTotalPrice = 10000L,

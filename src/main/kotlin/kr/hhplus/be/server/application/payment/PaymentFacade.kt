@@ -6,8 +6,8 @@ import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.order.model.OrderCommand
 import kr.hhplus.be.server.domain.payment.PaymentService
-import kr.hhplus.be.server.domain.payment.model.Payment
 import kr.hhplus.be.server.domain.payment.model.PaymentCommand
+import kr.hhplus.be.server.domain.payment.model.PaymentView
 import kr.hhplus.be.server.domain.point.PointService
 import kr.hhplus.be.server.domain.point.model.PointCommand
 import kr.hhplus.be.server.domain.product.ProductService
@@ -26,7 +26,7 @@ class PaymentFacade(
 
 
     @Transactional
-    fun pay(paymentCriteria: PaymentCriteria.PlacePayment): Payment {
+    fun pay(paymentCriteria: PaymentCriteria.PlacePayment): PaymentView {
 
         val order = orderService.getWithLockBy(OrderCommand.Order(paymentCriteria.orderId))
 
