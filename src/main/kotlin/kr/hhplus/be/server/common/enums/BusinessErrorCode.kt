@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.common.enums
 
-import kr.hhplus.be.server.domain.point.model.Point
+import kr.hhplus.be.server.domain.point.model.entity.Point
 import kr.hhplus.be.server.presentation.common.BusinessCode
 
 enum class BusinessErrorCode(

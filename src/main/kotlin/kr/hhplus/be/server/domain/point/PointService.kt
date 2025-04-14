@@ -3,9 +3,9 @@ package kr.hhplus.be.server.domain.point
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.point.enums.PointHistoryType
-import kr.hhplus.be.server.domain.point.model.Point
 import kr.hhplus.be.server.domain.point.model.PointCommand
-import kr.hhplus.be.server.domain.point.model.PointHistory
+import kr.hhplus.be.server.domain.point.model.PointView
+import kr.hhplus.be.server.domain.point.model.entity.PointHistory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,31 +15,40 @@ class PointService(
 ) {
 
     @Transactional
-    fun charge(pointCommand: PointCommand.Charge): Point {
+    fun charge(pointCommand: PointCommand.Charge): PointView {
 
-        var point = pointRepository.findUserPointWithLockBy(pointCommand.userId)
+        var userPoint = pointRepository.findUserPointWithLockBy(pointCommand.userId)
             ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
-        point.charge(pointCommand.amount)
+        userPoint.charge(pointCommand.amount)
 
-        point = pointRepository.savePoint(point)
+        userPoint = pointRepository.savePoint(userPoint)
 
         val pointHistory =
             PointHistory(
-                pointId = point.id!!,
+                pointId = userPoint.id!!,
                 point = pointCommand.amount,
                 type = PointHistoryType.CHARGE,
-                createdAt = point.createdAt
+                createdAt = userPoint.createdAt
             )
         pointRepository.savePointHistory(pointHistory)
-        return point
+        return PointView.from(userPoint)
     }
 
-    fun getPoint(pointCommand: PointCommand.Point): Point =
-        pointRepository.findBy(pointCommand.userId)
+    fun getPoint(pointCommand: PointCommand.Point): PointView =
+        PointView.from(
+            pointRepository.findBy(pointCommand.userId)
+                ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
+        )
+
+    fun validateUsable(pointCommand: PointCommand.Point): PointView {
+        val userPoint = pointRepository.findBy(pointCommand.userId)
             ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
+        userPoint.validateUsable()
+        return PointView.from(userPoint)
+    }
 
     @Transactional
-    fun usePoint(pointCommand: PointCommand.Update): Point {
+    fun usePoint(pointCommand: PointCommand.Update): PointView {
 
         var userPoint = pointRepository.findUserPointWithLockBy(pointCommand.userId)
             ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
@@ -54,6 +63,6 @@ class PointService(
                 createdAt = userPoint.createdAt
             )
         pointRepository.savePointHistory(pointHistory)
-        return userPoint
+        return PointView.from(userPoint)
     }
 }

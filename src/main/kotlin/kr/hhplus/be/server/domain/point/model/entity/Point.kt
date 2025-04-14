@@ -1,15 +1,15 @@
-package kr.hhplus.be.server.domain.point.model
+package kr.hhplus.be.server.domain.point.model.entity
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import java.time.LocalDateTime
 
 class Point(
-    var id: Long? = null,
+    val id: Long? = null,
     var userId: Long,
     point: Long,
-    var createdAt: LocalDateTime? = null,
-    var updatedAt: LocalDateTime? = null,
+    var createdAt: LocalDateTime = LocalDateTime.now(),
+    var updatedAt: LocalDateTime = LocalDateTime.now(),
 ) {
 
     var point: Long = point

@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.fixtures.point
 
 import kr.hhplus.be.server.domain.point.enums.PointHistoryType
-import kr.hhplus.be.server.domain.point.model.Point
-import kr.hhplus.be.server.domain.point.model.PointHistory
+import kr.hhplus.be.server.domain.point.model.entity.Point
+import kr.hhplus.be.server.domain.point.model.entity.PointHistory
 import java.time.LocalDateTime
 
 object PointFixture {

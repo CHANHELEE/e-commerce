@@ -30,8 +30,7 @@ class OrderFacade(
             couponService.validateUse(CouponCommand.UserCoupon(orderCriteria.userId, it))
         }
 
-        val point = pointService.getPoint(PointCommand.Point(orderCriteria.userId))
-        point.validateUsable()
+        pointService.validateUsable(PointCommand.Point(orderCriteria.userId))
 
         val orderProducts: List<OrderCommand.PlaceOrderProduct> = orderCriteria.orderedProduct!!.map { orderedProduct ->
             val stock = productService.getProductStockBy(

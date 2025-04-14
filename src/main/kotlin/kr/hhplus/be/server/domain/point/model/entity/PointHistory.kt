@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.point.model
+package kr.hhplus.be.server.domain.point.model.entity
 
 import kr.hhplus.be.server.domain.point.enums.PointHistoryType
 import java.time.LocalDateTime

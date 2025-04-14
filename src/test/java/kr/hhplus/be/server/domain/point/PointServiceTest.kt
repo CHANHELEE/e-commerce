@@ -3,7 +3,7 @@ package kr.hhplus.be.server.domain.point
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.point.enums.PointHistoryType
-import kr.hhplus.be.server.domain.point.model.Point
+import kr.hhplus.be.server.domain.point.model.entity.Point
 import kr.hhplus.be.server.domain.point.model.PointCommand
 import kr.hhplus.be.server.fixtures.point.PointChargeCommandFixture
 import kr.hhplus.be.server.fixtures.point.PointCommandFixture
@@ -17,8 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.check
@@ -136,6 +135,42 @@ class PointServiceTest {
                 pointService.usePoint(command)
             }
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.POINT_NOT_ENOUGH)
+        }
+    }
+
+    @Nested
+    inner class ValidateUsable {
+
+        @Test
+        fun `포인트 사용 검증에 성공한다`() {
+            // given
+            val userId = 1L
+            val point = PointFixture.get(userId = userId, point = 1000L)
+            val pointCommand = PointCommand.Point(userId)
+            given(pointRepository.findBy(userId)).willReturn(point)
+
+            // when
+            val result = pointService.validateUsable(pointCommand)
+
+            //then
+            assertThat(result)
+                .extracting("id", "point")
+                .contains(point.id, point.point)
+            verify(pointRepository, times(1)).findBy(any())
+        }
+
+        @Test
+        fun `포인트가 존재하지 않으면 USER_POINT_NOT_FOUND 예외가 발생한다`() {
+            // given
+            val userId = 1L
+            val pointCommand = PointCommand.Point(userId)
+            given(pointRepository.findBy(userId)).willReturn(null)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                pointService.validateUsable(pointCommand)
+            }
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.USER_POINT_NOT_FOUND)
         }
     }
 }

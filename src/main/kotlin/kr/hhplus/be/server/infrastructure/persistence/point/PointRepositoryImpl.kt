@@ -2,8 +2,8 @@ package kr.hhplus.be.server.infrastructure.persistence.point
 
 
 import kr.hhplus.be.server.domain.point.PointRepository
-import kr.hhplus.be.server.domain.point.model.Point
-import kr.hhplus.be.server.domain.point.model.PointHistory
+import kr.hhplus.be.server.domain.point.model.entity.Point
+import kr.hhplus.be.server.domain.point.model.entity.PointHistory
 import org.springframework.stereotype.Repository
 
 @Repository

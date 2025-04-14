@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.point
 
-import kr.hhplus.be.server.domain.point.model.Point
-import kr.hhplus.be.server.domain.point.model.PointHistory
+import kr.hhplus.be.server.domain.point.model.entity.Point
+import kr.hhplus.be.server.domain.point.model.entity.PointHistory
 
 interface PointRepository {
 

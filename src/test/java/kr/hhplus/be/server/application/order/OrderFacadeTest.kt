@@ -9,8 +9,8 @@ import kr.hhplus.be.server.domain.order.enums.OrderStatus
 import kr.hhplus.be.server.domain.order.model.Order
 import kr.hhplus.be.server.domain.order.model.OrderCommand
 import kr.hhplus.be.server.domain.point.PointService
-import kr.hhplus.be.server.domain.point.model.Point
 import kr.hhplus.be.server.domain.point.model.PointCommand
+import kr.hhplus.be.server.domain.point.model.PointView
 import kr.hhplus.be.server.domain.product.ProductService
 import kr.hhplus.be.server.domain.product.model.Product
 import kr.hhplus.be.server.domain.product.model.ProductCommand
@@ -23,6 +23,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.then
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.check
 import java.time.LocalDateTime
@@ -76,10 +77,11 @@ class OrderFacadeTest {
             updatedAt = LocalDateTime.now(),
             usedAt = null,
         )
+
+        val point = mock(PointView::class.java)
         given(couponService.validateUse(CouponCommand.UserCoupon(userId, couponId))).willReturn(userCoupon)
 
-        val point = Point(id = 1L, userId = userId, point = 100000L)
-        given(pointService.getPoint(PointCommand.Point(userId))).willReturn(point)
+        given(pointService.validateUsable(PointCommand.Point(userId))).willReturn(point)
 
         given(productService.getProductStockBy(ProductCommand.ProductStock(productId, productOptionId)))
             .willReturn(ProductStock(productId = productId, productOptionId = productOptionId, stock = 10))
