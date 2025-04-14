@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.domain.order
 
-import kr.hhplus.be.server.domain.order.model.Order
-import kr.hhplus.be.server.domain.order.model.OrderHistory
-import kr.hhplus.be.server.domain.order.model.OrderProduct
+import kr.hhplus.be.server.domain.order.model.entity.Order
+import kr.hhplus.be.server.domain.order.model.entity.OrderHistory
+import kr.hhplus.be.server.domain.order.model.entity.OrderProduct
 import java.time.LocalDateTime
 
 

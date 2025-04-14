@@ -1,13 +1,15 @@
-package kr.hhplus.be.server.domain.order.model
+package kr.hhplus.be.server.domain.order.model.entity
 
-import kr.hhplus.be.server.domain.order.enums.OrderStatus
+
 import java.time.LocalDateTime
 
-class Order(
+class OrderProduct(
     val id: Long = 0,
-    val userId: Long,
-    val userCouponId: Long? = null,
-    val status: OrderStatus,
+    val productOptionId: Long,
+    val productId: Long,
+    val orderId: Long,
+    val productPrice: Long,
+    var quantity: Long,
     var createdAt: LocalDateTime = LocalDateTime.now(),
     var updatedAt: LocalDateTime = LocalDateTime.now(),
     var deletedAt: LocalDateTime? = null,

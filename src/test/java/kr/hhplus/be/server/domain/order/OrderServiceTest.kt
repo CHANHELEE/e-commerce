@@ -4,6 +4,9 @@ import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
 import kr.hhplus.be.server.domain.order.model.*
+import kr.hhplus.be.server.domain.order.model.entity.Order
+import kr.hhplus.be.server.domain.order.model.entity.OrderHistory
+import kr.hhplus.be.server.domain.order.model.entity.OrderProduct
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -134,7 +137,9 @@ class OrderServiceTest {
             val result = orderService.getWithLockBy(OrderCommand.Order(orderId = 1L))
 
             // then
-            assertThat(result).isEqualTo(order)
+            assertThat(result)
+                .extracting("id", "userId")
+                .contains(order.id, order.userId)
         }
 
         @Test

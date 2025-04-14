@@ -5,8 +5,9 @@ import kr.hhplus.be.server.domain.coupon.CouponService
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
-import kr.hhplus.be.server.domain.order.model.Order
+import kr.hhplus.be.server.domain.order.model.entity.Order
 import kr.hhplus.be.server.domain.order.model.OrderCommand
+import kr.hhplus.be.server.domain.order.model.OrderView
 import kr.hhplus.be.server.domain.point.PointService
 import kr.hhplus.be.server.domain.point.model.PointCommand
 import kr.hhplus.be.server.domain.product.ProductService
@@ -24,7 +25,7 @@ class OrderFacade(
 
 
     @Transactional
-    fun placeOrder(orderCriteria: OrderCriteria.PlaceOrder): Order {
+    fun placeOrder(orderCriteria: OrderCriteria.PlaceOrder): OrderView {
 
         val userCoupon = orderCriteria.couponId?.let {
             couponService.validateUse(CouponCommand.UserCoupon(orderCriteria.userId, it))

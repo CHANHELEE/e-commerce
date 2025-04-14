@@ -5,7 +5,7 @@ import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.order.OrderRepository
 import kr.hhplus.be.server.domain.statistics.product.ProductStatisticRepository
-import kr.hhplus.be.server.domain.order.model.OrderProduct
+import kr.hhplus.be.server.domain.order.model.entity.OrderProduct
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

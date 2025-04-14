@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.order.model
+package kr.hhplus.be.server.domain.order.model.entity
 
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
 import java.time.LocalDateTime

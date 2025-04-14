@@ -2,9 +2,9 @@ package kr.hhplus.be.server.infrastructure.persistence.order
 
 
 import kr.hhplus.be.server.domain.order.OrderRepository
-import kr.hhplus.be.server.domain.order.model.Order
-import kr.hhplus.be.server.domain.order.model.OrderHistory
-import kr.hhplus.be.server.domain.order.model.OrderProduct
+import kr.hhplus.be.server.domain.order.model.entity.Order
+import kr.hhplus.be.server.domain.order.model.entity.OrderHistory
+import kr.hhplus.be.server.domain.order.model.entity.OrderProduct
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 

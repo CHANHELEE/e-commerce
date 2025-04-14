@@ -1,10 +1,6 @@
 package kr.hhplus.be.server.infrastructure.persistence.payment
 
 
-import kr.hhplus.be.server.domain.order.OrderRepository
-import kr.hhplus.be.server.domain.order.model.Order
-import kr.hhplus.be.server.domain.order.model.OrderHistory
-import kr.hhplus.be.server.domain.order.model.OrderProduct
 import kr.hhplus.be.server.domain.payment.PaymentRepository
 import kr.hhplus.be.server.domain.payment.model.Payment
 import kr.hhplus.be.server.domain.payment.model.PaymentHistory

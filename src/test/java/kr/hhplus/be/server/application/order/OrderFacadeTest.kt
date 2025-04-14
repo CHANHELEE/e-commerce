@@ -6,8 +6,9 @@ import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.coupon.model.UserCouponView
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
-import kr.hhplus.be.server.domain.order.model.Order
+import kr.hhplus.be.server.domain.order.model.entity.Order
 import kr.hhplus.be.server.domain.order.model.OrderCommand
+import kr.hhplus.be.server.domain.order.model.OrderView
 import kr.hhplus.be.server.domain.point.PointService
 import kr.hhplus.be.server.domain.point.model.PointCommand
 import kr.hhplus.be.server.domain.point.model.PointView
@@ -106,7 +107,15 @@ class OrderFacadeTest {
                 )
             )
 
-        val savedOrder = Order(id = 123L, userId = userId, userCouponId = couponId, status = OrderStatus.PENDING)
+        val savedOrder = OrderView(
+            id = 123L,
+            userId = userId,
+            userCouponId = couponId,
+            status = OrderStatus.PENDING,
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now(),
+            deletedAt = LocalDateTime.now()
+        )
         given(orderService.save(any())).willReturn(savedOrder)
 
         // when

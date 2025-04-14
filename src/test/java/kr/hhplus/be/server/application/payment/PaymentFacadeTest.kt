@@ -7,9 +7,11 @@ import kr.hhplus.be.server.domain.coupon.model.CouponView
 import kr.hhplus.be.server.domain.coupon.model.UserCouponView
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
-import kr.hhplus.be.server.domain.order.model.Order
+import kr.hhplus.be.server.domain.order.model.entity.Order
 import kr.hhplus.be.server.domain.order.model.OrderCommand
-import kr.hhplus.be.server.domain.order.model.OrderProduct
+import kr.hhplus.be.server.domain.order.model.OrderProductView
+import kr.hhplus.be.server.domain.order.model.OrderView
+import kr.hhplus.be.server.domain.order.model.entity.OrderProduct
 import kr.hhplus.be.server.domain.payment.PaymentService
 import kr.hhplus.be.server.domain.payment.model.Payment
 import kr.hhplus.be.server.domain.point.PointService
@@ -59,7 +61,15 @@ class PaymentFacadeTest {
             orderId = orderId
         )
 
-        val order = Order(id = orderId, userId = userId, userCouponId = couponId, status = OrderStatus.SUCCESS)
+        val order = OrderView(
+            id = orderId,
+            userId = userId,
+            userCouponId = couponId,
+            status = OrderStatus.SUCCESS,
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now(),
+            deletedAt = null,
+        )
         val userCoupon =
             UserCouponView(
                 id = 1L,
@@ -78,13 +88,16 @@ class PaymentFacadeTest {
             updatedAt = LocalDateTime.now()
         )
 
-        val orderProduct = OrderProduct(
+        val orderProduct = OrderProductView(
             id = 1L,
             orderId = orderId,
             productOptionId = 10L,
             productId = 1000L,
             productPrice = 5000L,
-            quantity = 2L
+            quantity = 2L,
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now(),
+            deletedAt = null,
         )
 
         val stock = ProductStockView(
