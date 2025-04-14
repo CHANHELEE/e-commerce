@@ -31,9 +31,7 @@ class PaymentFacade(
         val order = orderService.getWithLockBy(OrderCommand.Order(paymentCriteria.orderId))
 
         val coupon = order.userCouponId?.let {
-            var userCoupon = couponService.getUserCouponWithLockBy(CouponCommand.UserCoupon(order.userId, it))
-            userCoupon.use()
-            userCoupon = couponService.updateUserCoupon(CouponCommand.UseCoupon(userCoupon.id, userCoupon.usedAt!!))
+            val userCoupon = couponService.use(CouponCommand.UseCoupon(order.userCouponId))
             couponService.getCouponBy(CouponCommand.Coupon(userCoupon.couponId))
         }
 

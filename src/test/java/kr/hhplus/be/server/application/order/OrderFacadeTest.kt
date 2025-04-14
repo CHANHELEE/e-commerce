@@ -3,7 +3,7 @@ package kr.hhplus.be.server.application.order
 import kr.hhplus.be.server.application.order.model.OrderCriteria
 import kr.hhplus.be.server.domain.coupon.CouponService
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
-import kr.hhplus.be.server.domain.coupon.model.UserCoupon
+import kr.hhplus.be.server.domain.coupon.model.UserCouponView
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
 import kr.hhplus.be.server.domain.order.model.Order
@@ -25,6 +25,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.check
+import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
 class OrderFacadeTest {
@@ -67,13 +68,15 @@ class OrderFacadeTest {
             )
         )
 
-        val userCoupon = UserCoupon(
+        val userCoupon = UserCouponView(
             id = 1L,
             userId = userId,
             couponId = couponId,
-            usedAt = null
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now(),
+            usedAt = null,
         )
-        given(couponService.getUserCouponBy(CouponCommand.UserCoupon(userId, couponId))).willReturn(userCoupon)
+        given(couponService.validateUse(CouponCommand.UserCoupon(userId, couponId))).willReturn(userCoupon)
 
         val point = Point(id = 1L, userId = userId, point = 100000L)
         given(pointService.getPoint(PointCommand.Point(userId))).willReturn(point)

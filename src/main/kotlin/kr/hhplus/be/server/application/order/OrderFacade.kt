@@ -27,9 +27,7 @@ class OrderFacade(
     fun placeOrder(orderCriteria: OrderCriteria.PlaceOrder): Order {
 
         val userCoupon = orderCriteria.couponId?.let {
-            val userCoupon = couponService.getUserCouponBy(CouponCommand.UserCoupon(orderCriteria.userId, it))
-            userCoupon.validateUsable()
-            userCoupon
+            couponService.validateUse(CouponCommand.UserCoupon(orderCriteria.userId, it))
         }
 
         val point = pointService.getPoint(PointCommand.Point(orderCriteria.userId))

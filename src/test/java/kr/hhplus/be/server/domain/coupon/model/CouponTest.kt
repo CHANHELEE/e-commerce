@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.coupon.model
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
+import kr.hhplus.be.server.domain.coupon.model.entity.Coupon
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

@@ -3,8 +3,8 @@ package kr.hhplus.be.server.application.payment
 import kr.hhplus.be.server.application.payment.model.PaymentCriteria
 import kr.hhplus.be.server.domain.coupon.CouponService
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
-import kr.hhplus.be.server.domain.coupon.model.Coupon
-import kr.hhplus.be.server.domain.coupon.model.UserCoupon
+import kr.hhplus.be.server.domain.coupon.model.CouponView
+import kr.hhplus.be.server.domain.coupon.model.UserCouponView
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
 import kr.hhplus.be.server.domain.order.model.Order
@@ -61,8 +61,22 @@ class PaymentFacadeTest {
 
         val order = Order(id = orderId, userId = userId, userCouponId = couponId, status = OrderStatus.SUCCESS)
         val userCoupon =
-            UserCoupon(id = 1L, userId = userId, couponId = couponId, usedAt = null, createdAt = LocalDateTime.now())
-        val coupon = Coupon(id = couponId, amount = 10000L, discountPrice = 1000L, name = "할인쿠폰")
+            UserCouponView(
+                id = 1L,
+                userId = userId,
+                couponId = couponId,
+                usedAt = null,
+                createdAt = LocalDateTime.now(),
+                updatedAt = LocalDateTime.now()
+            )
+        val coupon = CouponView(
+            id = couponId,
+            amount = 10000L,
+            discountPrice = 1000L,
+            name = "할인쿠폰",
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now()
+        )
 
         val orderProduct = OrderProduct(
             id = 1L,
@@ -97,9 +111,8 @@ class PaymentFacadeTest {
         )
 
         given(orderService.getWithLockBy(OrderCommand.Order(orderId))).willReturn(order)
-        given(couponService.getUserCouponWithLockBy(CouponCommand.UserCoupon(userId, couponId))).willReturn(userCoupon)
-        given(couponService.updateUserCoupon(any())).willReturn(userCoupon)
-        given(couponService.getCouponBy(CouponCommand.Coupon(couponId))).willReturn(coupon)
+        given(couponService.use(CouponCommand.UseCoupon(order.userCouponId!!))).willReturn(userCoupon)
+        given(couponService.getCouponBy(CouponCommand.Coupon(userCoupon.couponId))).willReturn(coupon)
         given(orderService.getAllActiveOrderProductsBy(OrderCommand.Order(orderId))).willReturn(listOf(orderProduct))
         given(productService.getProductStockWithLockBy(any())).willReturn(stock)
         given(productService.getProductBy(any())).willReturn(product)
@@ -124,11 +137,10 @@ class PaymentFacadeTest {
         assertThat(result.orderId).isEqualTo(orderId)
         assertThat(result.payTotalPrice).isEqualTo(9000L)
 
-        verify(orderService, times(1)).getWithLockBy(OrderCommand.Order(orderId))
-        verify(couponService, times(1)).getUserCouponWithLockBy(CouponCommand.UserCoupon(userId, couponId))
-        verify(couponService, times(1)).updateUserCoupon(any())
-        verify(couponService, times(1)).getCouponBy(CouponCommand.Coupon(couponId))
-        verify(orderService, times(1)).getAllActiveOrderProductsBy(OrderCommand.Order(orderId))
+        verify(orderService, times(1)).getWithLockBy(any())
+        verify(couponService, times(1)).use(any())
+        verify(couponService, times(1)).getCouponBy(any())
+        verify(orderService, times(1)).getAllActiveOrderProductsBy(any())
         verify(productService, times(1)).getProductStockWithLockBy(any())
         verify(productService, times(1)).getProductBy(any())
         verify(pointService, times(1)).usePoint(any())
