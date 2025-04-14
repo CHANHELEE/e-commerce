@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.product.model
+package kr.hhplus.be.server.domain.product.model.entity
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode

@@ -4,7 +4,7 @@ import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.common.model.PagingResult
 import kr.hhplus.be.server.domain.product.model.ProductCommand
-import kr.hhplus.be.server.domain.product.model.ProductStock
+import kr.hhplus.be.server.domain.product.model.entity.ProductStock
 import kr.hhplus.be.server.fixtures.product.*
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -18,9 +18,6 @@ import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.check
-import org.mockito.kotlin.then
 import org.springframework.data.domain.PageRequest
 
 @ExtendWith(MockitoExtension::class)
@@ -88,7 +85,7 @@ class ProductServiceTest {
             given(productRepository.findAllDetailsBy(productCommand.productId)).willReturn(productOptions)
 
             //when
-            val returnedProduct = productService.getProductOptionsBy(productCommand)
+            val returnedProduct = productService.getProductDetailsBy(productCommand)
 
             //then
             assertThat(returnedProduct)
@@ -123,7 +120,7 @@ class ProductServiceTest {
 
             //when
             val exception = assertThrows<BusinessException> {
-                productService.getProductOptionsBy(productCommand)
+                productService.getProductDetailsBy(productCommand)
             }
 
             //then
@@ -193,60 +190,100 @@ class ProductServiceTest {
     }
 
     @Nested
-    inner class GetProductStockWithLockBy {
+    inner class ValidateStock {
 
         @Test
-        fun `재고가 존재하면 반환한다`() {
-            // given
-            val productCommand = ProductCommand.ProductStock(productId = 1L, optionId = 10L)
-            val stock = ProductStock(id = 1L, productId = 1L, productOptionId = 10L, stock = 5L)
+        fun `재고가 존재하면 상품 재고 정보를 반환한다`() {
 
-            given(productRepository.findStockWithLockBy(1L, 10L)).willReturn(stock)
+            // given
+            val productId = 1L
+            val optionId = 1L
+            val stockValue = 10L
+            val command = ProductCommand.ProductStock(productId, optionId)
+            val stock = ProductStock(productId, optionId, stock = stockValue)
+
+            given(productRepository.findStockBy(productId, optionId)).willReturn(stock)
 
             // when
-            val result = productService.getProductStockWithLockBy(productCommand)
+            val result = productService.validateStock(command)
 
             // then
-            assertThat(result).isEqualTo(stock)
+            assertThat(result)
+                .extracting("productId", "productOptionId", "stock")
+                .contains(productId, optionId, stockValue)
+            verify(productRepository, times(1)).findStockBy(productId, optionId)
         }
 
         @Test
-        fun `재고가 존재하지 않으면 예외가 발생한다`() {
+        fun `재고가 존재하지 않으면 PRODUCT_NOT_FOUND 예외를 발생시킨다`() {
+
             // given
-            val productCommand = ProductCommand.ProductStock(productId = 1L, optionId = 10L)
-            given(productRepository.findStockWithLockBy(1L, 10L)).willReturn(null)
+            val productId = 1L
+            val optionId = 2L
+            val command = ProductCommand.ProductStock(productId, optionId)
+
+            given(productRepository.findStockBy(productId, optionId)).willReturn(null)
 
             // when & then
             val exception = assertThrows<BusinessException> {
-                productService.getProductStockWithLockBy(productCommand)
+                productService.validateStock(command)
             }
+
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.PRODUCT_NOT_FOUND)
+            verify(productRepository, times(1)).findStockBy(productId, optionId)
         }
     }
 
     @Nested
-    inner class UpdateStock {
+    inner class DecreaseStock {
 
         @Test
-        fun `재고가 정상적으로 업데이트된다`() {
-            // given
-            val stockId = 1L
-            val stockAmount = 50L
-            val productCommand = ProductCommand.UpdateStock(stockId = stockId, stock = stockAmount)
-            val updatedStock = ProductStock(id = stockId, productId = 1L, productOptionId = 10L, stock = stockAmount)
+        fun `재고가 존재하면 재고를 차감하고 업데이트된 재고 정보를 반환한다`() {
 
-            given(productRepository.updateStock(any())).willReturn(updatedStock)
+            // given
+            val productId = 1L
+            val optionId = 1L
+            val beforeStock = 10L
+            val decreaseAmount = 3L
+            val afterStock = beforeStock - decreaseAmount
+            val command = ProductCommand.UpdateStock(productId, optionId, decreaseAmount)
+
+            val stock = ProductStock(productId, optionId, stock = beforeStock)
+            val updatedStock = ProductStock(productId, optionId, stock = afterStock)
+
+            given(productRepository.findStockWithLockBy(productId, optionId)).willReturn(stock)
+            given(productRepository.updateStock(stock)).willReturn(updatedStock)
 
             // when
-            val result = productService.updateStock(productCommand)
+            val result = productService.decreaseStock(command)
 
             // then
-            then(productRepository).should().updateStock(check {
-                assertThat(it.stockId).isEqualTo(stockId)
-                assertThat(it.stock).isEqualTo(stockAmount)
-            })
+            assertThat(result)
+                .extracting("productId", "productOptionId", "stock")
+                .contains(productId, optionId, afterStock)
 
-            assertThat(result).isEqualTo(updatedStock)
+            verify(productRepository, times(1)).findStockWithLockBy(productId, optionId)
+            verify(productRepository, times(1)).updateStock(stock)
+        }
+
+        @Test
+        fun `재고가 존재하지 않으면 PRODUCT_NOT_FOUND 예외를 발생시킨다`() {
+
+            // given
+            val productId = 1L
+            val optionId = 1L
+            val decreaseAmount = 2L
+            val command = ProductCommand.UpdateStock(productId, optionId, decreaseAmount)
+
+            given(productRepository.findStockWithLockBy(productId, optionId)).willReturn(null)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                productService.decreaseStock(command)
+            }
+
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.PRODUCT_NOT_FOUND)
+            verify(productRepository, times(1)).findStockWithLockBy(productId, optionId)
         }
     }
 }

@@ -38,14 +38,13 @@ class PaymentFacade(
         var originTotalPrice = 0L
         orderService.getAllActiveOrderProductsBy(OrderCommand.Order(order.id)).forEach {
 
-            val stock = productService.getProductStockWithLockBy(
-                ProductCommand.ProductStock(
+            productService.decreaseStock(
+                ProductCommand.UpdateStock(
                     productId = it.productId,
-                    optionId = it.productOptionId
+                    optionId = it.productOptionId,
+                    amount = it.quantity
                 )
             )
-            stock.decreaseStock(it.quantity)
-            productService.updateStock(ProductCommand.UpdateStock(stock.id, stock.stock))
 
             val product = productService.getProductBy(ProductCommand.Product(it.productId))
             originTotalPrice += product.price * it.quantity

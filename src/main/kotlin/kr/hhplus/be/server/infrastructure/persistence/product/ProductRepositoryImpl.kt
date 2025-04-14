@@ -2,10 +2,9 @@ package kr.hhplus.be.server.infrastructure.persistence.product
 
 import kr.hhplus.be.server.domain.common.model.PagingResult
 import kr.hhplus.be.server.domain.product.ProductRepository
-import kr.hhplus.be.server.domain.product.model.Product
 import kr.hhplus.be.server.domain.product.model.ProductDetailView
-import kr.hhplus.be.server.domain.product.model.ProductStock
-import kr.hhplus.be.server.domain.product.model.UpdateProductStock
+import kr.hhplus.be.server.domain.product.model.entity.Product
+import kr.hhplus.be.server.domain.product.model.entity.ProductStock
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 
@@ -31,7 +30,7 @@ class ProductRepositoryImpl : ProductRepository {
         TODO("Not yet implemented")
     }
 
-    override fun updateStock(updateProductStock: UpdateProductStock): ProductStock {
+    override fun updateStock(productStock: ProductStock): ProductStock {
         TODO("Not yet implemented")
     }
 }

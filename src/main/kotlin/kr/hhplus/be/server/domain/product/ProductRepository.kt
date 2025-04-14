@@ -1,10 +1,9 @@
 package kr.hhplus.be.server.domain.product
 
 import kr.hhplus.be.server.domain.common.model.PagingResult
-import kr.hhplus.be.server.domain.product.model.Product
 import kr.hhplus.be.server.domain.product.model.ProductDetailView
-import kr.hhplus.be.server.domain.product.model.ProductStock
-import kr.hhplus.be.server.domain.product.model.UpdateProductStock
+import kr.hhplus.be.server.domain.product.model.entity.Product
+import kr.hhplus.be.server.domain.product.model.entity.ProductStock
 import org.springframework.data.domain.Pageable
 
 interface ProductRepository {
@@ -19,5 +18,5 @@ interface ProductRepository {
 
     fun findStockWithLockBy(productId: Long, optionId: Long): ProductStock?
 
-    fun updateStock(updateProductStock: UpdateProductStock): ProductStock
+    fun updateStock(productStock: ProductStock): ProductStock
 }

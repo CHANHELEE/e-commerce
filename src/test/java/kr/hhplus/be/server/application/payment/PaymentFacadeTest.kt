@@ -14,8 +14,8 @@ import kr.hhplus.be.server.domain.payment.PaymentService
 import kr.hhplus.be.server.domain.payment.model.Payment
 import kr.hhplus.be.server.domain.point.PointService
 import kr.hhplus.be.server.domain.product.ProductService
-import kr.hhplus.be.server.domain.product.model.Product
-import kr.hhplus.be.server.domain.product.model.ProductStock
+import kr.hhplus.be.server.domain.product.model.ProductStockView
+import kr.hhplus.be.server.domain.product.model.ProductView
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -87,17 +87,21 @@ class PaymentFacadeTest {
             quantity = 2L
         )
 
-        val stock = ProductStock(
+        val stock = ProductStockView(
             id = 1L,
             productId = orderProduct.productId,
             productOptionId = orderProduct.productOptionId,
-            stock = 10
+            stock = 10,
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now(),
         )
 
-        val product = Product(
+        val product = ProductView(
             id = orderProduct.productId,
             name = "테스트상품",
-            price = 5000L
+            price = 5000L,
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now(),
         )
 
         val savedPayment = Payment(
@@ -114,7 +118,7 @@ class PaymentFacadeTest {
         given(couponService.use(CouponCommand.UseCoupon(order.userCouponId!!))).willReturn(userCoupon)
         given(couponService.getCouponBy(CouponCommand.Coupon(userCoupon.couponId))).willReturn(coupon)
         given(orderService.getAllActiveOrderProductsBy(OrderCommand.Order(orderId))).willReturn(listOf(orderProduct))
-        given(productService.getProductStockWithLockBy(any())).willReturn(stock)
+        given(productService.decreaseStock(any())).willReturn(stock)
         given(productService.getProductBy(any())).willReturn(product)
         given(paymentService.save(any())).willReturn(savedPayment)
 
@@ -141,7 +145,7 @@ class PaymentFacadeTest {
         verify(couponService, times(1)).use(any())
         verify(couponService, times(1)).getCouponBy(any())
         verify(orderService, times(1)).getAllActiveOrderProductsBy(any())
-        verify(productService, times(1)).getProductStockWithLockBy(any())
+        verify(productService, times(1)).decreaseStock(any())
         verify(productService, times(1)).getProductBy(any())
         verify(pointService, times(1)).usePoint(any())
         verify(paymentService, times(1)).save(any())

@@ -12,9 +12,9 @@ import kr.hhplus.be.server.domain.point.PointService
 import kr.hhplus.be.server.domain.point.model.PointCommand
 import kr.hhplus.be.server.domain.point.model.PointView
 import kr.hhplus.be.server.domain.product.ProductService
-import kr.hhplus.be.server.domain.product.model.Product
 import kr.hhplus.be.server.domain.product.model.ProductCommand
-import kr.hhplus.be.server.domain.product.model.ProductStock
+import kr.hhplus.be.server.domain.product.model.ProductStockView
+import kr.hhplus.be.server.domain.product.model.ProductView
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -83,11 +83,28 @@ class OrderFacadeTest {
 
         given(pointService.validateUsable(PointCommand.Point(userId))).willReturn(point)
 
-        given(productService.getProductStockBy(ProductCommand.ProductStock(productId, productOptionId)))
-            .willReturn(ProductStock(productId = productId, productOptionId = productOptionId, stock = 10))
+        given(productService.validateStock(ProductCommand.ProductStock(productId, productOptionId)))
+            .willReturn(
+                ProductStockView(
+                    id = 1L,
+                    productId = productId,
+                    productOptionId = productOptionId,
+                    stock = 10L,
+                    createdAt = LocalDateTime.now(),
+                    updatedAt = LocalDateTime.now(),
+                )
+            )
 
         given(productService.getProductBy(ProductCommand.Product(productId)))
-            .willReturn(Product(id = productId, name = "상품", price = price))
+            .willReturn(
+                ProductView(
+                    id = productId,
+                    name = "상품",
+                    price = price,
+                    createdAt = LocalDateTime.now(),
+                    updatedAt = LocalDateTime.now()
+                )
+            )
 
         val savedOrder = Order(id = 123L, userId = userId, userCouponId = couponId, status = OrderStatus.PENDING)
         given(orderService.save(any())).willReturn(savedOrder)

@@ -12,26 +12,43 @@ class ProductService(
     private val productRepository: ProductRepository,
 ) {
 
-    fun getProductBy(productCommand: ProductCommand.Product): Product =
-        productRepository.findBy(productCommand.productId)
-            ?: throw BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND)
+    fun getProductBy(productCommand: ProductCommand.Product): ProductView =
+        ProductView.from(
+            productRepository.findBy(productCommand.productId)
+                ?: throw BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND)
+        )
 
-    fun getProductOptionsBy(productCommand: ProductCommand.ProductOption): List<ProductDetailView> =
+    fun getProductDetailsBy(productCommand: ProductCommand.ProductOption): List<ProductDetailView> =
         productRepository.findAllDetailsBy(productCommand.productId)
             ?: throw BusinessException(BusinessErrorCode.PRODUCT_OPTIONS_NOT_FOUND)
 
-    fun getProductsBy(pageable: Pageable): PagingResult<Product> =
-        productRepository.findAllBy(pageable)
+    fun getProductsBy(pageable: Pageable): PagingResult<ProductView> {
+        val result = productRepository.findAllBy(pageable)
             ?: throw BusinessException(BusinessErrorCode.PRODUCTS_NOT_EXIST)
 
-    fun getProductStockBy(productCommand: ProductCommand.ProductStock): ProductStock =
-        productRepository.findStockBy(productCommand.productId, productCommand.optionId)
-            ?: throw BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND)
+        val convertedContent = result.data.map { ProductView.from(it) }
 
-    fun getProductStockWithLockBy(productCommand: ProductCommand.ProductStock): ProductStock =
-        productRepository.findStockWithLockBy(productCommand.productId, productCommand.optionId)
-            ?: throw BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND)
+        return PagingResult(
+            data = convertedContent,
+            totalPages = result.totalPages,
+            totalElements = result.totalElements,
+            currentPage = result.currentPage,
+        )
+    }
 
-    fun updateStock(productCommand: ProductCommand.UpdateStock): ProductStock =
-        productRepository.updateStock(UpdateProductStock(productCommand.stockId, productCommand.stock))
+    fun validateStock(productCommand: ProductCommand.ProductStock): ProductStockView {
+
+        val stock = productRepository.findStockBy(productCommand.productId, productCommand.optionId)
+            ?: throw BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND)
+        stock.validateStock()
+        return ProductStockView.from(stock)
+    }
+
+    fun decreaseStock(productCommand: ProductCommand.UpdateStock): ProductStockView {
+
+        val stock = productRepository.findStockWithLockBy(productCommand.productId, productCommand.optionId)
+            ?: throw BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND)
+        stock.decreaseStock(productCommand.amount)
+        return ProductStockView.from(productRepository.updateStock(stock))
+    }
 }

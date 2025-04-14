@@ -33,21 +33,20 @@ class OrderFacade(
         pointService.validateUsable(PointCommand.Point(orderCriteria.userId))
 
         val orderProducts: List<OrderCommand.PlaceOrderProduct> = orderCriteria.orderedProduct!!.map { orderedProduct ->
-            val stock = productService.getProductStockBy(
+
+            productService.validateStock(
                 ProductCommand.ProductStock(
-                    productId = orderedProduct.productId!!,
-                    optionId = orderedProduct.productOptionId!!
+                    orderedProduct.productId,
+                    orderedProduct.productOptionId
                 )
             )
-            stock.validateStock()
 
             val product = productService.getProductBy(ProductCommand.Product(orderedProduct.productId))
-            val price = product.price
 
             OrderCommand.PlaceOrderProduct(
                 productOptionId = orderedProduct.productOptionId,
                 orderId = 0L,
-                productPrice = price,
+                productPrice = product.price,
                 quantity = orderedProduct.quantity,
                 productId = orderedProduct.productId,
             )

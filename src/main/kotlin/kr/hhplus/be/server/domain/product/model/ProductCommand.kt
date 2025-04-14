@@ -16,7 +16,8 @@ class ProductCommand {
     )
 
     data class UpdateStock(
-        val stockId: Long,
-        val stock: Long,
+        val productId: Long,
+        val optionId: Long,
+        val amount: Long,
     )
 }
