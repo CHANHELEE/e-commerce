@@ -6,6 +6,7 @@ POPULAR_PRODUCTS와 PRODUCTS 테이블 간 JOIN이 필요하다.
 이로 인해 인기 상품 조회 API의 응답 속도에 영향을 줄 수 있으며,
 특히 트래픽이 집중되는 시간대에는 JOIN 비용 증가로 인해
 상품 테이블에 부하가 발생할 수 있다는 성능 이슈가 있다.
+- 인기 상품 조회 시 비즈니스 적으로 중요한 PRODUCTS에 부하를 주는 것이 부담이라고 판단.
 - **AS IS ERD**
 ```mermaid
 erDiagram
