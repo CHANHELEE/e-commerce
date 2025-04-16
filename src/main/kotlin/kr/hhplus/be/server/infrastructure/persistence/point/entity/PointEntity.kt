@@ -14,7 +14,7 @@ class PointEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0,
 
     @Column(name = "user_id", nullable = false)
     val userId: Long,

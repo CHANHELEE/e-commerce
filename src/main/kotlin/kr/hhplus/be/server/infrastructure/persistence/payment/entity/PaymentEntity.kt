@@ -14,7 +14,7 @@ class PaymentEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0,
 
     @Column(name = "order_id", nullable = false)
     val orderId: Long,

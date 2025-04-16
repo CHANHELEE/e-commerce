@@ -13,7 +13,7 @@ class PopularProductEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0,
 
     @Column(name = "product_id", nullable = false)
     val productId: Long,
