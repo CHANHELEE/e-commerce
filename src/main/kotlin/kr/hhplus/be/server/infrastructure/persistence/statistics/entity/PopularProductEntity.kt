@@ -24,7 +24,4 @@ class PopularProductEntity(
     @Column(nullable = false)
     val ranking: Int
 
-) : BaseEntity(
-    createdAt = LocalDateTime.now(),
-    updatedAt = LocalDateTime.now()
-)
+) : BaseEntity()

@@ -41,7 +41,4 @@ class OrderProductEntity(
     @Column(name = "deleted_at", columnDefinition = "DATETIME(6)", nullable = true)
     var deletedAt: LocalDateTime? = null
 
-) : BaseEntity(
-    createdAt = LocalDateTime.now(),
-    updatedAt = LocalDateTime.now()
-)
+) : BaseEntity()

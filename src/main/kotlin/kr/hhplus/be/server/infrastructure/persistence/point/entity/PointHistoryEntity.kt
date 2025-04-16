@@ -28,4 +28,4 @@ class PointHistoryEntity(
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
     val type: PointHistoryType,
-) : HistoryBaseEntity(createdAt = LocalDateTime.now())
+) : HistoryBaseEntity()

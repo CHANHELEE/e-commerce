@@ -22,7 +22,4 @@ class PointEntity(
     @Column(nullable = false)
     var point: Int
 
-) : BaseEntity(
-    createdAt = LocalDateTime.now(),
-    updatedAt = LocalDateTime.now()
-)
+) : BaseEntity()

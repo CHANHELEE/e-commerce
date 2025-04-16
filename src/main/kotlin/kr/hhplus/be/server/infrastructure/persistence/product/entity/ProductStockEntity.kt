@@ -34,7 +34,4 @@ class ProductStockEntity(
     @Column(nullable = false)
     var stock: Long
 
-) : BaseEntity(
-    createdAt = LocalDateTime.now(),
-    updatedAt = LocalDateTime.now()
-)
+) : BaseEntity()

@@ -17,7 +17,4 @@ class UserEntity(
     @Column(nullable = false, length = 10)
     var name: String
 
-) : BaseEntity(
-    createdAt = LocalDateTime.now(),
-    updatedAt = LocalDateTime.now()
-)
+) : BaseEntity()

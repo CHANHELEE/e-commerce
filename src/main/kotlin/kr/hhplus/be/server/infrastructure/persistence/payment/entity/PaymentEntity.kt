@@ -32,7 +32,4 @@ class PaymentEntity(
     @Column(name = "discount_price", nullable = true)
     var discountPrice: Int? = null
 
-) : BaseEntity(
-    createdAt = LocalDateTime.now(),
-    updatedAt = LocalDateTime.now()
-)
+) : BaseEntity()

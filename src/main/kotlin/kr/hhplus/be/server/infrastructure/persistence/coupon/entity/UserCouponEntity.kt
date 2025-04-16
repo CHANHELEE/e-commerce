@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.infrastructure.persistence.coupon.entity
 
 import jakarta.persistence.*
+import kr.hhplus.be.server.domain.coupon.model.entity.UserCoupon
 import kr.hhplus.be.server.infrastructure.persistence.common.entity.BaseEntity
 import java.time.LocalDateTime
 
@@ -29,7 +30,16 @@ class UserCouponEntity(
     @Column(name = "used_at", columnDefinition = "DATETIME(6)", nullable = true)
     var usedAt: LocalDateTime? = null
 
-) : BaseEntity(
-    createdAt = LocalDateTime.now(),
-    updatedAt = LocalDateTime.now()
-)
+) : BaseEntity() {
+
+    fun toDomain(): UserCoupon {
+        return UserCoupon(
+            id = id!!,
+            couponId = coupon.id!!,
+            userId = userId,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+            usedAt = usedAt,
+        )
+    }
+}

@@ -24,4 +24,4 @@ class OrderHistoryEntity(
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     val status: OrderStatus,
-) : HistoryBaseEntity(createdAt = LocalDateTime.now())
+) : HistoryBaseEntity()

@@ -18,7 +18,4 @@ class ProductEntity(
     @Column(nullable = false)
     var price: Int
 
-) : BaseEntity(
-    createdAt = LocalDateTime.now(),
-    updatedAt = LocalDateTime.now()
-)
+) : BaseEntity()
