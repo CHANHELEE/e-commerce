@@ -156,7 +156,7 @@ CREATE TABLE payment
     CONSTRAINT fk_payment_order FOREIGN KEY (order_id) REFERENCES orders (id)
 );
 
-CREATE TABLE payment_status_histories
+CREATE TABLE payment_histories
 (
     id                 BIGINT      NOT NULL PRIMARY KEY COMMENT '아이디',
     payment_id         BIGINT      NOT NULL COMMENT '결제아이디',
