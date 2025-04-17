@@ -51,7 +51,7 @@ class PaymentFacade(
         }
 
         val payTotalPrice = originTotalPrice - (coupon?.discountPrice ?: 0L)
-        pointService.usePoint(PointCommand.Update(order.userId, payTotalPrice))
+        pointService.use(PointCommand.Update(order.userId, payTotalPrice))
 
         val payment = paymentService.save(
             PaymentCommand.PlacePayment(

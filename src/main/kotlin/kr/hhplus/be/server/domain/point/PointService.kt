@@ -34,7 +34,7 @@ class PointService(
         return PointView.from(userPoint)
     }
 
-    fun getPoint(pointCommand: PointCommand.Point): PointView =
+    fun get(pointCommand: PointCommand.Point): PointView =
         PointView.from(
             pointRepository.findBy(pointCommand.userId)
                 ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
@@ -48,7 +48,7 @@ class PointService(
     }
 
     @Transactional
-    fun usePoint(pointCommand: PointCommand.Update): PointView {
+    fun use(pointCommand: PointCommand.Update): PointView {
 
         var userPoint = pointRepository.findUserPointWithLockBy(pointCommand.userId)
             ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)

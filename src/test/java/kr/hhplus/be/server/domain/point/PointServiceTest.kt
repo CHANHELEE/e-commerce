@@ -67,7 +67,7 @@ class PointServiceTest {
         given(pointRepository.findBy(any())).willReturn(point)
 
         //when
-        val returnedPoint = pointService.getPoint(pointCommandFixture)
+        val returnedPoint = pointService.get(pointCommandFixture)
 
 
         //then
@@ -78,7 +78,7 @@ class PointServiceTest {
     }
 
     @Nested
-    inner class UsePoint {
+    inner class use {
 
         @Test
         fun `사용자가 존재하고 포인트가 충분하면 정상 차감되고 이력 저장된다`() {
@@ -92,7 +92,7 @@ class PointServiceTest {
             given(pointRepository.updatePoint(any())).willReturn(point)
 
             // when
-            val result = pointService.usePoint(command)
+            val result = pointService.use(command)
 
             // then
             then(pointRepository).should().updatePoint(check {
@@ -116,7 +116,7 @@ class PointServiceTest {
 
             // when & then
             val exception = assertThrows<BusinessException> {
-                pointService.usePoint(command)
+                pointService.use(command)
             }
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.USER_POINT_NOT_FOUND)
         }
@@ -132,7 +132,7 @@ class PointServiceTest {
 
             // when & then
             val exception = assertThrows<BusinessException> {
-                pointService.usePoint(command)
+                pointService.use(command)
             }
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.POINT_NOT_ENOUGH)
         }

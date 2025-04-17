@@ -138,7 +138,7 @@ class PaymentFacadeTest {
         val result = paymentFacade.pay(paymentCriteria)
 
         // then
-        then(pointService).should().usePoint(check {
+        then(pointService).should().use(check {
             assertThat(it.userId).isEqualTo(userId)
             assertThat(it.amount).isEqualTo(9000L)
         })
@@ -159,7 +159,7 @@ class PaymentFacadeTest {
         verify(orderService, times(1)).getAllActiveOrderProductsBy(any())
         verify(productService, times(1)).decreaseStock(any())
         verify(productService, times(1)).getProductBy(any())
-        verify(pointService, times(1)).usePoint(any())
+        verify(pointService, times(1)).use(any())
         verify(paymentService, times(1)).save(any())
     }
 }
