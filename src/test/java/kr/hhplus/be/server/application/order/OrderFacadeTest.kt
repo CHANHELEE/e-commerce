@@ -96,7 +96,7 @@ class OrderFacadeTest {
                 )
             )
 
-        given(productService.getProductBy(ProductCommand.Product(productId)))
+        given(productService.getBy(ProductCommand.Product(productId)))
             .willReturn(
                 ProductView(
                     id = productId,

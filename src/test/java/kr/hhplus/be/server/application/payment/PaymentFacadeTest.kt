@@ -131,7 +131,7 @@ class PaymentFacadeTest {
         given(couponService.getCouponBy(CouponCommand.Coupon(userCoupon.couponId))).willReturn(coupon)
         given(orderService.getAllActiveOrderProductsBy(OrderCommand.Order(orderId))).willReturn(listOf(orderProduct))
         given(productService.decreaseStock(any())).willReturn(stock)
-        given(productService.getProductBy(any())).willReturn(product)
+        given(productService.getBy(any())).willReturn(product)
         given(paymentService.save(any())).willReturn(savedPayment)
 
         // when
@@ -158,7 +158,7 @@ class PaymentFacadeTest {
         verify(couponService, times(1)).getCouponBy(any())
         verify(orderService, times(1)).getAllActiveOrderProductsBy(any())
         verify(productService, times(1)).decreaseStock(any())
-        verify(productService, times(1)).getProductBy(any())
+        verify(productService, times(1)).getBy(any())
         verify(pointService, times(1)).use(any())
         verify(paymentService, times(1)).save(any())
     }

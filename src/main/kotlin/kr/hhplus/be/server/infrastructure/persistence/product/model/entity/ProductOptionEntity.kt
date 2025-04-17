@@ -1,8 +1,7 @@
-package kr.hhplus.be.server.infrastructure.persistence.product.entity
+package kr.hhplus.be.server.infrastructure.persistence.product.model.entity
 
 import jakarta.persistence.*
 import kr.hhplus.be.server.infrastructure.persistence.common.entity.BaseEntity
-import java.time.LocalDateTime
 
 @Entity
 @Table(
@@ -15,13 +14,8 @@ class ProductOptionEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-        name = "product_id",
-        nullable = false,
-        foreignKey = ForeignKey(name = "fk_option_product")
-    )
-    val product: ProductEntity,
+    @Column(nullable = false)
+    val productId: Long,
 
     @Column(nullable = false, length = 30)
     var size: String,

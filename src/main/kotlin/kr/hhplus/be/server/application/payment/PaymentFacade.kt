@@ -46,7 +46,7 @@ class PaymentFacade(
                 )
             )
 
-            val product = productService.getProductBy(ProductCommand.Product(it.productId))
+            val product = productService.getBy(ProductCommand.Product(it.productId))
             originTotalPrice += product.price * it.quantity
         }
 

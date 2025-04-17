@@ -31,7 +31,7 @@ data class ProductView(
     val name: String,
     val price: Long,
     val createdAt: LocalDateTime?,
-    val updatedAt: LocalDateTime?,
+    val updatedAt: LocalDateTime,
 ) {
     companion object {
         fun from(entity: Product): ProductView {
@@ -40,7 +40,7 @@ data class ProductView(
                 name = entity.name,
                 price = entity.price,
                 createdAt = entity.createdAt,
-                updatedAt = entity.updatedAt,
+                updatedAt = entity.updatedAt!!,
             )
         }
     }

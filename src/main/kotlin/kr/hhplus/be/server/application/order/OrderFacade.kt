@@ -42,7 +42,7 @@ class OrderFacade(
                 )
             )
 
-            val product = productService.getProductBy(ProductCommand.Product(orderedProduct.productId))
+            val product = productService.getBy(ProductCommand.Product(orderedProduct.productId))
 
             OrderCommand.PlaceOrderProduct(
                 productOptionId = orderedProduct.productOptionId,
