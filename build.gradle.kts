@@ -1,4 +1,3 @@
-import nu.studer.gradle.jooq.JooqEdition
 plugins {
 	kotlin("jvm") version "2.1.0"
 	kotlin("kapt") version "2.1.0"
@@ -84,39 +83,4 @@ tasks.withType<Test> {
 
 tasks.test {
 	outputs.upToDateWhen { false }
-}
-
-jooq {
-	version.set("3.18.10")
-	edition.set(JooqEdition.OSS)
-
-	configurations {
-		create("main") {
-			generateSchemaSourceOnCompilation.set(true)
-			jooqConfiguration.apply {
-				jdbc = jdbc.apply {
-					driver = "com.mysql.cj.jdbc.Driver"
-					url = "jdbc:mysql://localhost:33306/ecommerce?serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
-					user = "root"
-					password = "ecommerce"
-				}
-				generator.apply {
-					name = "org.jooq.codegen.KotlinGenerator"
-					database.apply {
-						name = "org.jooq.meta.mysql.MySQLDatabase"
-						excludes = "sys"
-					}
-					generate.apply {
-						isDeprecated = false
-						isFluentSetters = true
-						isRecords = true
-					}
-					target.apply {
-						directory = "build/generated-src/jooq/main"
-					}
-					strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
-				}
-			}
-		}
-	}
 }
