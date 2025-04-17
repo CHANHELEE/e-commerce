@@ -16,6 +16,7 @@ class OrderService(
     private val orderRepository: OrderRepository
 ) {
 
+    @Transactional
     fun getWithLockBy(orderCommand: OrderCommand.Order): OrderView =
         OrderView.from(
             orderRepository.findWithLockBy(orderCommand.orderId)

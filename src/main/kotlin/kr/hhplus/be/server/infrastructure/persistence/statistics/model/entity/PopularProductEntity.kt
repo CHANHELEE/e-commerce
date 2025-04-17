@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.persistence.statistics.entity
+package kr.hhplus.be.server.infrastructure.persistence.statistics.model.entity
 
 import jakarta.persistence.*
 import kr.hhplus.be.server.infrastructure.persistence.common.entity.BaseEntity

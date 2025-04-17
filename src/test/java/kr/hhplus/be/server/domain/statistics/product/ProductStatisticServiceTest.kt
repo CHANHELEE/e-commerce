@@ -30,11 +30,11 @@ class ProductStatisticServiceTest {
         fun `인기 상품이 존재하면 리스트를 반환한다`() {
             // given
             val popularList = listOf(
-                PopularProductView(id = 1L, productName = "test", rank = 1),
-                PopularProductView(id = 2L, productName = "test", rank = 2),
-                PopularProductView(id = 3L, productName = "test", rank = 3),
-                PopularProductView(id = 4L, productName = "test", rank = 4),
-                PopularProductView(id = 5L, productName = "test", rank = 5),
+                PopularProductView(id = 1L, productId = 1L, productName = "test", rank = 1),
+                PopularProductView(id = 2L, productId = 2L, productName = "test", rank = 2),
+                PopularProductView(id = 3L, productId = 3L, productName = "test", rank = 3),
+                PopularProductView(id = 4L, productId = 4L, productName = "test", rank = 4),
+                PopularProductView(id = 5L, productId = 5L, productName = "test", rank = 5),
             )
             given(productStatisticRepository.findAllPopularProduct()).willReturn(popularList)
 

@@ -3,9 +3,8 @@ package kr.hhplus.be.server.application.statistics.product
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
-import kr.hhplus.be.server.domain.order.OrderRepository
 import kr.hhplus.be.server.domain.statistics.product.ProductStatisticRepository
-import kr.hhplus.be.server.domain.order.model.entity.OrderProduct
+import kr.hhplus.be.server.domain.statistics.product.model.PopularProductView
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -20,9 +19,6 @@ import org.mockito.kotlin.given
 class PopularProductSchedulerTest {
 
     @Mock
-    lateinit var orderRepository: OrderRepository
-
-    @Mock
     lateinit var productStatisticRepository: ProductStatisticRepository
 
     @InjectMocks
@@ -35,11 +31,13 @@ class PopularProductSchedulerTest {
         fun `정상적으로 인기 상품이 저장된다`() {
             // given
             val topProducts = listOf(
-                OrderProduct(productId = 101L, productOptionId = 1L, orderId = 1L, productPrice = 1000L, quantity = 2L),
-                OrderProduct(productId = 102L, productOptionId = 2L, orderId = 1L, productPrice = 2000L, quantity = 1L)
+                PopularProductView(id = 1, productId = 1L, productName = "test1", rank = 1),
+                PopularProductView(id = 2, productId = 2L, productName = "test1", rank = 2),
+                PopularProductView(id = 3, productId = 3L, productName = "test1", rank = 3),
+                PopularProductView(id = 4, productId = 4L, productName = "test1", rank = 4),
+                PopularProductView(id = 5, productId = 5L, productName = "test1", rank = 5),
             )
-
-            given(orderRepository.findTop5BestProduct(any())).willReturn(topProducts)
+            given(productStatisticRepository.findTop5BestProduct(any())).willReturn(topProducts)
             given(productStatisticRepository.saveAllPopularProducts(any())).willReturn(true)
 
             // when & then: 예외 없으면 성공
@@ -49,7 +47,7 @@ class PopularProductSchedulerTest {
         @Test
         fun `인기 상품 조회 결과가 null이면 예외가 발생한다`() {
             // given
-            given(orderRepository.findTop5BestProduct(any())).willReturn(null)
+            given(productStatisticRepository.findTop5BestProduct(any())).willReturn(null)
 
             // expect
             assertThatThrownBy {
@@ -61,7 +59,7 @@ class PopularProductSchedulerTest {
         @Test
         fun `인기 상품이 비어있으면 예외가 발생한다`() {
             // given
-            given(orderRepository.findTop5BestProduct(any())).willReturn(emptyList())
+            given(productStatisticRepository.findTop5BestProduct(any())).willReturn(emptyList())
 
             // expect
             assertThatThrownBy {
