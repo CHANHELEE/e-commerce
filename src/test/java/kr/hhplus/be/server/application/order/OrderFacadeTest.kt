@@ -6,8 +6,6 @@ import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.coupon.model.UserCouponView
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
-import kr.hhplus.be.server.domain.order.model.entity.Order
-import kr.hhplus.be.server.domain.order.model.OrderCommand
 import kr.hhplus.be.server.domain.order.model.OrderView
 import kr.hhplus.be.server.domain.point.PointService
 import kr.hhplus.be.server.domain.point.model.PointCommand
@@ -21,12 +19,10 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
-import org.mockito.BDDMockito.then
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.check
 import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -116,7 +112,7 @@ class OrderFacadeTest {
             updatedAt = LocalDateTime.now(),
             deletedAt = LocalDateTime.now()
         )
-        given(orderService.save(any())).willReturn(savedOrder)
+        given(orderService.order(any(), any())).willReturn(savedOrder)
 
         // when
         val result = orderFacade.placeOrder(criteria)
@@ -124,18 +120,5 @@ class OrderFacadeTest {
         // then
         assertThat(result.id).isEqualTo(savedOrder.id)
         assertThat(result.status).isEqualTo(OrderStatus.PENDING)
-
-        then(orderService).should().saveHistory(
-            OrderCommand.PlaceOrderHistory(orderId = savedOrder.id, status = savedOrder.status)
-        )
-
-        then(orderService).should().saveOrderProducts(check {
-            assertThat(it).hasSize(1)
-            val product = it[0]
-            assertThat(product.productOptionId).isEqualTo(productOptionId)
-            assertThat(product.productPrice).isEqualTo(price)
-            assertThat(product.orderId).isEqualTo(savedOrder.id)
-            assertThat(product.quantity).isEqualTo(quantity)
-        })
     }
 }
