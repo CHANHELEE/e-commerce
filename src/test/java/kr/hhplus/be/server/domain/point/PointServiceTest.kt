@@ -64,7 +64,7 @@ class PointServiceTest {
         //given
         val point = PointFixture.get()
         val pointCommandFixture = PointCommandFixture.get()
-        given(pointRepository.findBy(any())).willReturn(point)
+        given(pointRepository.findUserPointBy(any())).willReturn(point)
 
         //when
         val returnedPoint = pointService.get(pointCommandFixture)
@@ -74,7 +74,7 @@ class PointServiceTest {
         assertThat(returnedPoint)
             .extracting("id", "point")
             .contains(point.id, point.point)
-        verify(pointRepository, times(1)).findBy(any())
+        verify(pointRepository, times(1)).findUserPointBy(any())
     }
 
     @Nested
@@ -89,13 +89,13 @@ class PointServiceTest {
             val command = PointCommand.Update(userId, useAmount)
 
             given(pointRepository.findUserPointWithLockBy(userId)).willReturn(point)
-            given(pointRepository.updatePoint(any())).willReturn(point)
+            given(pointRepository.savePoint(any())).willReturn(point)
 
             // when
             val result = pointService.use(command)
 
             // then
-            then(pointRepository).should().updatePoint(check {
+            then(pointRepository).should().savePoint(check {
                 assertThat(it.point).isEqualTo(500L)
             })
 
@@ -147,7 +147,7 @@ class PointServiceTest {
             val userId = 1L
             val point = PointFixture.get(userId = userId, point = 1000L)
             val pointCommand = PointCommand.Point(userId)
-            given(pointRepository.findBy(userId)).willReturn(point)
+            given(pointRepository.findUserPointBy(userId)).willReturn(point)
 
             // when
             val result = pointService.validateUsable(pointCommand)
@@ -156,7 +156,7 @@ class PointServiceTest {
             assertThat(result)
                 .extracting("id", "point")
                 .contains(point.id, point.point)
-            verify(pointRepository, times(1)).findBy(any())
+            verify(pointRepository, times(1)).findUserPointBy(any())
         }
 
         @Test
@@ -164,7 +164,7 @@ class PointServiceTest {
             // given
             val userId = 1L
             val pointCommand = PointCommand.Point(userId)
-            given(pointRepository.findBy(userId)).willReturn(null)
+            given(pointRepository.findUserPointBy(userId)).willReturn(null)
 
             // when & then
             val exception = assertThrows<BusinessException> {

@@ -7,10 +7,14 @@ import kr.hhplus.be.server.domain.point.model.entity.PointHistory
 import org.springframework.stereotype.Repository
 
 @Repository
-class PointRepositoryImpl : PointRepository {
+class PointRepositoryImpl(
+    private val pointJpaRepository: PointJpaRepository,
+    private val pointHistoryJpaRepository: PointHistoryJpaRepository,
+) : PointRepository {
 
     override fun findUserPointWithLockBy(userId: Long): Point? {
         TODO("Not yet implemented")
+//        return pointJpaRepository.fin
     }
 
     override fun savePoint(point: Point): Point {
@@ -21,11 +25,7 @@ class PointRepositoryImpl : PointRepository {
         TODO("Not yet implemented")
     }
 
-    override fun findBy(userId: Long): Point? {
-        TODO("Not yet implemented")
-    }
-
-    override fun updatePoint(point: Point): Point {
+    override fun findUserPointBy(userId: Long): Point? {
         TODO("Not yet implemented")
     }
 }

@@ -36,12 +36,12 @@ class PointService(
 
     fun get(pointCommand: PointCommand.Point): PointView =
         PointView.from(
-            pointRepository.findBy(pointCommand.userId)
+            pointRepository.findUserPointBy(pointCommand.userId)
                 ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
         )
 
     fun validateUsable(pointCommand: PointCommand.Point): PointView {
-        val userPoint = pointRepository.findBy(pointCommand.userId)
+        val userPoint = pointRepository.findUserPointBy(pointCommand.userId)
             ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
         userPoint.validateUsable()
         return PointView.from(userPoint)
@@ -53,7 +53,7 @@ class PointService(
         var userPoint = pointRepository.findUserPointWithLockBy(pointCommand.userId)
             ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
         userPoint.use(pointCommand.amount)
-        userPoint = pointRepository.updatePoint(userPoint)
+        userPoint = pointRepository.savePoint(userPoint)
 
         val pointHistory =
             PointHistory(
