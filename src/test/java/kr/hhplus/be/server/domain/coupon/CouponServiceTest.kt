@@ -195,7 +195,7 @@ class CouponServiceTest {
             // given
             val userCoupon = UserCoupon(id = userCouponId, userId = userId, couponId = couponId, usedAt = null)
             given(couponRepository.findUserCouponWithLockBy(userCouponId)).willReturn(userCoupon)
-            given(couponRepository.updateUserCoupon(any())).willReturn(userCoupon)
+            given(couponRepository.saveUserCoupon(any())).willReturn(userCoupon)
 
             // when
             val result = couponService.use(CouponCommand.UseCoupon(userCouponId))
@@ -203,7 +203,7 @@ class CouponServiceTest {
             // then
             assertThat(result.couponId).isEqualTo(couponId)
             verify(couponRepository, times(1)).findUserCouponWithLockBy(userCouponId)
-            verify(couponRepository, times(1)).updateUserCoupon(any())
+            verify(couponRepository, times(1)).saveUserCoupon(any())
         }
 
         @Test

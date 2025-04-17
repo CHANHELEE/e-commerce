@@ -12,9 +12,9 @@ interface CouponRepository {
 
     fun saveUserCoupon(userCoupon: UserCoupon): UserCoupon
 
-    fun updateUserCoupon(userCoupon: UserCoupon): UserCoupon
-
     fun findCouponBy(couponId: Long): Coupon?
 
     fun findCouponWithLockBy(couponId: Long): Coupon?
+
+    fun saveCoupon(coupon: Coupon): Coupon
 }
