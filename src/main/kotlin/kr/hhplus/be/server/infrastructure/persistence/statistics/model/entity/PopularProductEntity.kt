@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.infrastructure.persistence.statistics.model.entity
 
 import jakarta.persistence.*
+import kr.hhplus.be.server.domain.statistics.product.model.PopularProduct
 import kr.hhplus.be.server.infrastructure.persistence.common.entity.BaseEntity
-import java.time.LocalDateTime
 
 @Entity
 @Table(
@@ -24,4 +24,26 @@ class PopularProductEntity(
     @Column(nullable = false)
     val ranking: Int
 
-) : BaseEntity()
+) : BaseEntity() {
+
+    fun toDomain(): PopularProduct {
+        return PopularProduct(
+            id = id,
+            productId = productId,
+            name = name,
+            ranking = ranking,
+            createdAt = createdAt
+        )
+    }
+
+    companion object {
+        fun from(popularProduct: PopularProduct): PopularProductEntity {
+            return PopularProductEntity(
+                id = popularProduct.id,
+                productId = popularProduct.productId,
+                name = popularProduct.name,
+                ranking = popularProduct.ranking,
+            )
+        }
+    }
+}

@@ -6,3 +6,9 @@ data class PopularProductView(
     val productName: String,
     val rank: Int,
 )
+
+
+data class PopularProductAggregateView(
+    val productId: Long,
+    val productName: String,
+)

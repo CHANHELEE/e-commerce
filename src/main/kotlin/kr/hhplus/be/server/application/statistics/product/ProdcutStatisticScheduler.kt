@@ -21,7 +21,7 @@ class PopularProductScheduler(
         val start = LocalDateTime.now().toLocalDate().atStartOfDay().minusDays(1)
         val startDate = start.minusDays(2)
 
-        val topProducts = productStatisticRepository.findTop5BestProduct(startDate)
+        val topProducts = productStatisticRepository.findTop5BestSellingProductsSince(startDate)
             ?: throw BusinessException(BusinessErrorCode.PRODUCT_OPTIONS_NOT_FOUND)
 
         if (topProducts.isEmpty()) {
@@ -31,7 +31,8 @@ class PopularProductScheduler(
         val popularProducts = topProducts.mapIndexed { index, orderProduct ->
             PopularProduct(
                 productId = orderProduct.productId,
-                rank = index + 1
+                name = orderProduct.productName,
+                ranking = index + 1
             )
         }
         productStatisticRepository.saveAllPopularProducts(popularProducts)
