@@ -3,6 +3,8 @@ package kr.hhplus.be.server.infrastructure.persistence.point.entity
 import jakarta.persistence.Entity
 import jakarta.persistence.*
 import kr.hhplus.be.server.domain.point.enums.PointHistoryType
+import kr.hhplus.be.server.domain.point.model.entity.Point
+import kr.hhplus.be.server.domain.point.model.entity.PointHistory
 import kr.hhplus.be.server.infrastructure.persistence.common.entity.HistoryBaseEntity
 import java.time.LocalDateTime
 
@@ -14,18 +16,36 @@ class PointHistoryEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-        name = "point_id",
-        nullable = false,
-        foreignKey = ForeignKey(name = "fk_point_history_point")
-    )
-    val point: PointEntity,
+    @Column(nullable = false)
+    val pointId: Long,
 
     @Column(nullable = false)
-    val pointAmount: Int,
+    val pointAmount: Long,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
     val type: PointHistoryType,
-) : HistoryBaseEntity()
+) : HistoryBaseEntity() {
+
+    fun toDomain(): PointHistory {
+        return PointHistory(
+            id = id,
+            pointId = pointId,
+            point = pointAmount,
+            type = type,
+            createdAt = createdAt
+        )
+    }
+
+    companion object {
+        fun from(pointHistory: PointHistory): PointHistoryEntity {
+            return PointHistoryEntity(
+                id = pointHistory.id,
+                pointId = pointHistory.pointId,
+                pointAmount = pointHistory.point,
+                type = pointHistory.type,
+            )
+        }
+    }
+
+}

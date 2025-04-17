@@ -2,8 +2,8 @@ package kr.hhplus.be.server.infrastructure.persistence.point.entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.*
+import kr.hhplus.be.server.domain.point.model.entity.Point
 import kr.hhplus.be.server.infrastructure.persistence.common.entity.BaseEntity
-import java.time.LocalDateTime
 
 @Entity
 @Table(
@@ -20,6 +20,26 @@ class PointEntity(
     val userId: Long,
 
     @Column(nullable = false)
-    var point: Int
+    var point: Long
 
-) : BaseEntity()
+) : BaseEntity() {
+    fun toDomain(): Point {
+        return Point(
+            id = id,
+            userId = userId,
+            point = point,
+            createdAt = createdAt,
+            updatedAt = updatedAt
+        )
+    }
+
+    companion object {
+        fun from(point: Point): PointEntity {
+            return PointEntity(
+                id = point.id,
+                userId = point.userId,
+                point = point.point,
+            )
+        }
+    }
+}

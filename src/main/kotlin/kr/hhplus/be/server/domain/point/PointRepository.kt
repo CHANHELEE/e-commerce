@@ -7,9 +7,9 @@ interface PointRepository {
 
     fun findUserPointWithLockBy(userId: Long): Point?
 
-    fun savePoint(point: Point): Point
+    fun save(point: Point): Point
 
-    fun savePointHistory(pointHistory: PointHistory): PointHistory
+    fun saveHistory(pointHistory: PointHistory): PointHistory
 
     fun findUserPointBy(userId: Long): Point?
 }

@@ -5,7 +5,7 @@ import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import java.time.LocalDateTime
 
 class Point(
-    val id: Long? = null,
+    val id: Long = 0,
     var userId: Long,
     point: Long,
     var createdAt: LocalDateTime = LocalDateTime.now(),

@@ -4,7 +4,7 @@ import kr.hhplus.be.server.domain.point.enums.PointHistoryType
 import java.time.LocalDateTime
 
 class PointHistory(
-    var id: Long? = null,
+    var id: Long = 0,
     var pointId: Long,
     var point: Long,
     var type: PointHistoryType,

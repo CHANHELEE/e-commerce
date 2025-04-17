@@ -42,8 +42,8 @@ class PointServiceTest {
         val savedPoint = PointFixture.get(point = point.point + pointChargeCommand.amount)
         val pointHistory = PointHistoryFixture.get()
         given(pointRepository.findUserPointWithLockBy(pointChargeCommand.userId)).willReturn(point)
-        given(pointRepository.savePoint(any())).willReturn(savedPoint)
-        given(pointRepository.savePointHistory(any())).willReturn(pointHistory)
+        given(pointRepository.save(any())).willReturn(savedPoint)
+        given(pointRepository.saveHistory(any())).willReturn(pointHistory)
 
         //when
         val returnedPoint = pointService.charge(pointChargeCommand)
@@ -54,8 +54,8 @@ class PointServiceTest {
             .extracting("id", "point")
             .contains(savedPoint.id, savedPoint.point)
         verify(pointRepository, times(1)).findUserPointWithLockBy(pointChargeCommand.userId)
-        verify(pointRepository, times(1)).savePoint(any())
-        verify(pointRepository, times(1)).savePointHistory(any())
+        verify(pointRepository, times(1)).save(any())
+        verify(pointRepository, times(1)).saveHistory(any())
     }
 
     @Test
@@ -89,17 +89,17 @@ class PointServiceTest {
             val command = PointCommand.Update(userId, useAmount)
 
             given(pointRepository.findUserPointWithLockBy(userId)).willReturn(point)
-            given(pointRepository.savePoint(any())).willReturn(point)
+            given(pointRepository.save(any())).willReturn(point)
 
             // when
             val result = pointService.use(command)
 
             // then
-            then(pointRepository).should().savePoint(check {
+            then(pointRepository).should().save(check {
                 assertThat(it.point).isEqualTo(500L)
             })
 
-            then(pointRepository).should().savePointHistory(check {
+            then(pointRepository).should().saveHistory(check {
                 assertThat(it.point).isEqualTo(useAmount)
                 assertThat(it.pointId).isEqualTo(point.id)
                 assertThat(it.type).isEqualTo(PointHistoryType.USE)

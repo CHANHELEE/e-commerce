@@ -21,16 +21,16 @@ class PointService(
             ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
         userPoint.charge(pointCommand.amount)
 
-        userPoint = pointRepository.savePoint(userPoint)
+        userPoint = pointRepository.save(userPoint)
 
-        val pointHistory =
+        pointRepository.saveHistory(
             PointHistory(
                 pointId = userPoint.id!!,
                 point = pointCommand.amount,
                 type = PointHistoryType.CHARGE,
                 createdAt = userPoint.createdAt
             )
-        pointRepository.savePointHistory(pointHistory)
+        )
         return PointView.from(userPoint)
     }
 
@@ -53,16 +53,16 @@ class PointService(
         var userPoint = pointRepository.findUserPointWithLockBy(pointCommand.userId)
             ?: throw BusinessException(BusinessErrorCode.USER_POINT_NOT_FOUND)
         userPoint.use(pointCommand.amount)
-        userPoint = pointRepository.savePoint(userPoint)
+        userPoint = pointRepository.save(userPoint)
 
-        val pointHistory =
+        pointRepository.saveHistory(
             PointHistory(
                 pointId = userPoint.id!!,
                 point = pointCommand.amount,
                 type = PointHistoryType.USE,
                 createdAt = userPoint.createdAt
             )
-        pointRepository.savePointHistory(pointHistory)
+        )
         return PointView.from(userPoint)
     }
 }
