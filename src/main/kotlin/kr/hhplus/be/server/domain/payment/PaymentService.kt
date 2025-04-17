@@ -20,7 +20,8 @@ class PaymentService(
                 orderId = paymentCommand.orderId,
                 originTotalPrice = paymentCommand.originTotalPrice,
                 payTotalPrice = paymentCommand.payTotalPrice,
-                discountPrice = paymentCommand.discountPrice
+                discountPrice = paymentCommand.discountPrice,
+                status = paymentCommand.status,
             )
         )
 
@@ -29,7 +30,8 @@ class PaymentService(
                 paymentId = payment.id,
                 originTotalPrice = payment.originTotalPrice,
                 payTotalPrice = paymentCommand.payTotalPrice,
-                discountPrice = paymentCommand.discountPrice
+                discountPrice = paymentCommand.discountPrice,
+                status = paymentCommand.status,
             )
         )
         return PaymentView.from(payment)

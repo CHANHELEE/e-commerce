@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.order.model.OrderCommand
 import kr.hhplus.be.server.domain.payment.PaymentService
+import kr.hhplus.be.server.domain.payment.enums.PaymentStatus
 import kr.hhplus.be.server.domain.payment.model.PaymentCommand
 import kr.hhplus.be.server.domain.payment.model.PaymentView
 import kr.hhplus.be.server.domain.point.PointService
@@ -59,6 +60,7 @@ class PaymentFacade(
                 originTotalPrice = originTotalPrice,
                 payTotalPrice = payTotalPrice,
                 discountPrice = coupon?.discountPrice,
+                status = PaymentStatus.SUCCESS,
             )
         )
         return payment

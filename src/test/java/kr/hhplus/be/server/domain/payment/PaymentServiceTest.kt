@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.payment
 
+import kr.hhplus.be.server.domain.payment.enums.PaymentStatus
 import kr.hhplus.be.server.domain.payment.model.entity.Payment
 import kr.hhplus.be.server.domain.payment.model.PaymentCommand
 import org.assertj.core.api.Assertions.assertThat
@@ -31,7 +32,8 @@ class PaymentServiceTest {
             orderId = 1L,
             originTotalPrice = 10000L,
             payTotalPrice = 9000L,
-            discountPrice = 1000L
+            discountPrice = 1000L,
+            status = PaymentStatus.SUCCESS,
         )
 
         val savedPayment = Payment(
@@ -41,7 +43,8 @@ class PaymentServiceTest {
             payTotalPrice = command.payTotalPrice,
             discountPrice = command.discountPrice,
             createdAt = LocalDateTime.now(),
-            updatedAt = LocalDateTime.now()
+            updatedAt = LocalDateTime.now(),
+            status = PaymentStatus.SUCCESS,
         )
 
         given(paymentRepository.save(any())).willReturn(savedPayment)
