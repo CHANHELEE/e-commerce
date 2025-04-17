@@ -132,7 +132,7 @@ class PaymentFacadeTest {
         given(orderService.getAllActiveOrderProductsBy(OrderCommand.Order(orderId))).willReturn(listOf(orderProduct))
         given(productService.decreaseStock(any())).willReturn(stock)
         given(productService.getBy(any())).willReturn(product)
-        given(paymentService.save(any())).willReturn(savedPayment)
+        given(paymentService.pay(any())).willReturn(savedPayment)
 
         // when
         val result = paymentFacade.pay(paymentCriteria)
@@ -143,7 +143,7 @@ class PaymentFacadeTest {
             assertThat(it.amount).isEqualTo(9000L)
         })
 
-        then(paymentService).should().save(check {
+        then(paymentService).should().pay(check {
             assertThat(it.orderId).isEqualTo(orderId)
             assertThat(it.originTotalPrice).isEqualTo(10000L)
             assertThat(it.payTotalPrice).isEqualTo(9000L)
@@ -160,6 +160,6 @@ class PaymentFacadeTest {
         verify(productService, times(1)).decreaseStock(any())
         verify(productService, times(1)).getBy(any())
         verify(pointService, times(1)).use(any())
-        verify(paymentService, times(1)).save(any())
+        verify(paymentService, times(1)).pay(any())
     }
 }

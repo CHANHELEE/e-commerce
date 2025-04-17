@@ -47,7 +47,7 @@ class PaymentServiceTest {
         given(paymentRepository.save(any())).willReturn(savedPayment)
 
         // when
-        val result = paymentService.save(command)
+        paymentService.pay(command)
 
         // then
         then(paymentRepository).should().save(check {

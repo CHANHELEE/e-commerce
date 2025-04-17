@@ -5,13 +5,15 @@ import kr.hhplus.be.server.domain.payment.model.PaymentCommand
 import kr.hhplus.be.server.domain.payment.model.PaymentView
 import kr.hhplus.be.server.domain.payment.model.entity.PaymentHistory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PaymentService(
     private val paymentRepository: PaymentRepository
 ) {
 
-    fun save(paymentCommand: PaymentCommand.PlacePayment): PaymentView {
+    @Transactional
+    fun pay(paymentCommand: PaymentCommand.PlacePayment): PaymentView {
 
         val payment = paymentRepository.save(
             Payment(
