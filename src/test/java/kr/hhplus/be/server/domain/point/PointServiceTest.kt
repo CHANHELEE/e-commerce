@@ -3,7 +3,7 @@ package kr.hhplus.be.server.domain.point
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.point.enums.PointHistoryType
-import kr.hhplus.be.server.domain.point.model.Point
+import kr.hhplus.be.server.domain.point.model.entity.Point
 import kr.hhplus.be.server.domain.point.model.PointCommand
 import kr.hhplus.be.server.fixtures.point.PointChargeCommandFixture
 import kr.hhplus.be.server.fixtures.point.PointCommandFixture
@@ -17,8 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.check
@@ -43,8 +42,8 @@ class PointServiceTest {
         val savedPoint = PointFixture.get(point = point.point + pointChargeCommand.amount)
         val pointHistory = PointHistoryFixture.get()
         given(pointRepository.findUserPointWithLockBy(pointChargeCommand.userId)).willReturn(point)
-        given(pointRepository.savePoint(any())).willReturn(savedPoint)
-        given(pointRepository.savePointHistory(any())).willReturn(pointHistory)
+        given(pointRepository.save(any())).willReturn(savedPoint)
+        given(pointRepository.saveHistory(any())).willReturn(pointHistory)
 
         //when
         val returnedPoint = pointService.charge(pointChargeCommand)
@@ -55,8 +54,8 @@ class PointServiceTest {
             .extracting("id", "point")
             .contains(savedPoint.id, savedPoint.point)
         verify(pointRepository, times(1)).findUserPointWithLockBy(pointChargeCommand.userId)
-        verify(pointRepository, times(1)).savePoint(any())
-        verify(pointRepository, times(1)).savePointHistory(any())
+        verify(pointRepository, times(1)).save(any())
+        verify(pointRepository, times(1)).saveHistory(any())
     }
 
     @Test
@@ -65,21 +64,21 @@ class PointServiceTest {
         //given
         val point = PointFixture.get()
         val pointCommandFixture = PointCommandFixture.get()
-        given(pointRepository.findBy(any())).willReturn(point)
+        given(pointRepository.findUserPointBy(any())).willReturn(point)
 
         //when
-        val returnedPoint = pointService.getPoint(pointCommandFixture)
+        val returnedPoint = pointService.get(pointCommandFixture)
 
 
         //then
         assertThat(returnedPoint)
             .extracting("id", "point")
             .contains(point.id, point.point)
-        verify(pointRepository, times(1)).findBy(any())
+        verify(pointRepository, times(1)).findUserPointBy(any())
     }
 
     @Nested
-    inner class UsePoint {
+    inner class use {
 
         @Test
         fun `사용자가 존재하고 포인트가 충분하면 정상 차감되고 이력 저장된다`() {
@@ -90,17 +89,17 @@ class PointServiceTest {
             val command = PointCommand.Update(userId, useAmount)
 
             given(pointRepository.findUserPointWithLockBy(userId)).willReturn(point)
-            given(pointRepository.updatePoint(any())).willReturn(point)
+            given(pointRepository.save(any())).willReturn(point)
 
             // when
-            val result = pointService.usePoint(command)
+            val result = pointService.use(command)
 
             // then
-            then(pointRepository).should().updatePoint(check {
+            then(pointRepository).should().save(check {
                 assertThat(it.point).isEqualTo(500L)
             })
 
-            then(pointRepository).should().savePointHistory(check {
+            then(pointRepository).should().saveHistory(check {
                 assertThat(it.point).isEqualTo(useAmount)
                 assertThat(it.pointId).isEqualTo(point.id)
                 assertThat(it.type).isEqualTo(PointHistoryType.USE)
@@ -117,7 +116,7 @@ class PointServiceTest {
 
             // when & then
             val exception = assertThrows<BusinessException> {
-                pointService.usePoint(command)
+                pointService.use(command)
             }
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.USER_POINT_NOT_FOUND)
         }
@@ -133,9 +132,45 @@ class PointServiceTest {
 
             // when & then
             val exception = assertThrows<BusinessException> {
-                pointService.usePoint(command)
+                pointService.use(command)
             }
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.POINT_NOT_ENOUGH)
+        }
+    }
+
+    @Nested
+    inner class ValidateUsable {
+
+        @Test
+        fun `포인트 사용 검증에 성공한다`() {
+            // given
+            val userId = 1L
+            val point = PointFixture.get(userId = userId, point = 1000L)
+            val pointCommand = PointCommand.Point(userId)
+            given(pointRepository.findUserPointBy(userId)).willReturn(point)
+
+            // when
+            val result = pointService.validateUsable(pointCommand)
+
+            //then
+            assertThat(result)
+                .extracting("id", "point")
+                .contains(point.id, point.point)
+            verify(pointRepository, times(1)).findUserPointBy(any())
+        }
+
+        @Test
+        fun `포인트가 존재하지 않으면 USER_POINT_NOT_FOUND 예외가 발생한다`() {
+            // given
+            val userId = 1L
+            val pointCommand = PointCommand.Point(userId)
+            given(pointRepository.findUserPointBy(userId)).willReturn(null)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                pointService.validateUsable(pointCommand)
+            }
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.USER_POINT_NOT_FOUND)
         }
     }
 }

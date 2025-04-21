@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.fixtures.product
 
-import kr.hhplus.be.server.domain.product.model.Product
 import kr.hhplus.be.server.domain.product.model.ProductDetailView
+import kr.hhplus.be.server.domain.product.model.entity.Product
 import java.time.LocalDateTime
 
 object ProductFixture {

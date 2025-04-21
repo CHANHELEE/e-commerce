@@ -2,6 +2,8 @@ package kr.hhplus.be.server.presentation.order
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
+import kr.hhplus.be.server.application.order.OrderFacade
+import kr.hhplus.be.server.application.order.model.OrderCriteria
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 import kr.hhplus.be.server.presentation.common.annotation.SuccessResponse
 import kr.hhplus.be.server.presentation.order.model.OrderRequest
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/orders")
-class OrderController {
+class OrderController(
+    private val orderFacade: OrderFacade,
+) {
 
 
     @Operation(
@@ -32,10 +36,21 @@ class OrderController {
     )
     @PostMapping("")
     @SuccessResponse
-    fun order(@RequestBody @Valid orderRequest: OrderRequest.NewOrder): OrderResponse.Order =
-        OrderResponse.Order(
-            1L,
-            null,
-            listOf(OrderResponse.OrderedProduct(1L, 1L, 20L))
+    fun order(@RequestBody @Valid orderRequest: OrderRequest.NewOrder): OrderResponse.Order {
+        val order = orderFacade.placeOrder(
+            OrderCriteria.PlaceOrder(
+                userId = orderRequest.userId!!,
+                couponId = orderRequest.couponId,
+                orderedProduct = orderRequest.orderedProduct!!.map {
+                    OrderCriteria.OrderedProduct(
+                        productId = it.productId!!,
+                        productOptionId = it.productOptionId!!,
+                        quantity = it.quantity!!
+                    )
+                }
+            )
         )
+        return OrderResponse.Order(order.id, order.userId)
+    }
+
 }

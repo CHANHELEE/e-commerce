@@ -1,0 +1,24 @@
+server:
+  port: 8091
+---
+spring:
+  application:
+    name: hhplus
+  datasource:
+    url: jdbc:tc:mysql:8.0:///testDB
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 3
+      connection-timeout: 10000
+      max-lifetime: 60000
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    open-in-view: false
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.timezone.default_storage: NORMALIZE_UTC
+      hibernate.jdbc.time_zone: UTC
+

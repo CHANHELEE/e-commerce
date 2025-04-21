@@ -10,8 +10,15 @@ class ProductStatisticService(
     private val productStatisticRepository: ProductStatisticRepository
 ) {
 
-    fun getAllPopularProducts(): List<PopularProductView> =
-        productStatisticRepository.findAllPopularProduct()
+    fun getAllPopularProducts(): List<PopularProductView> {
+        val popularProducts = productStatisticRepository.findAllPopularProducts()
             ?: throw BusinessException(BusinessErrorCode.POPULAR_PRODUCTS_NOT_EXIST)
 
+        return popularProducts.map { PopularProductView(
+            id = it.id,
+            productId = it.productId,
+            productName = it.name,
+            rank = it.ranking
+        ) }
+    }
 }

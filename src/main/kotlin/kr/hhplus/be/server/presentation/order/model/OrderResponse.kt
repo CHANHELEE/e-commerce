@@ -3,9 +3,8 @@ package kr.hhplus.be.server.presentation.order.model
 class OrderResponse {
 
     data class Order(
+        val id: Long,
         val userId: Long,
-        val couponId: Long?,
-        val orderedProduct: List<OrderedProduct>
     )
 
     data class OrderedProduct(

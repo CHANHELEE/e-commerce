@@ -3,9 +3,8 @@ package kr.hhplus.be.server.application.statistics.product
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
-import kr.hhplus.be.server.domain.order.OrderRepository
 import kr.hhplus.be.server.domain.statistics.product.ProductStatisticRepository
-import kr.hhplus.be.server.domain.order.model.OrderProduct
+import kr.hhplus.be.server.domain.statistics.product.model.PopularProductAggregateView
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -14,13 +13,12 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.given
+import org.mockito.kotlin.whenever
 
 @ExtendWith(MockitoExtension::class)
 class PopularProductSchedulerTest {
-
-    @Mock
-    lateinit var orderRepository: OrderRepository
 
     @Mock
     lateinit var productStatisticRepository: ProductStatisticRepository
@@ -35,12 +33,14 @@ class PopularProductSchedulerTest {
         fun `정상적으로 인기 상품이 저장된다`() {
             // given
             val topProducts = listOf(
-                OrderProduct(productId = 101L, productOptionId = 1L, orderId = 1L, productPrice = 1000L, quantity = 2L),
-                OrderProduct(productId = 102L, productOptionId = 2L, orderId = 1L, productPrice = 2000L, quantity = 1L)
+                PopularProductAggregateView(productId = 1L, productName = "test1"),
+                PopularProductAggregateView(productId = 2L, productName = "test1"),
+                PopularProductAggregateView(productId = 3L, productName = "test1"),
+                PopularProductAggregateView(productId = 4L, productName = "test1"),
+                PopularProductAggregateView(productId = 5L, productName = "test1"),
             )
-
-            given(orderRepository.findTop5BestProduct(any())).willReturn(topProducts)
-            given(productStatisticRepository.saveAllPopularProducts(any())).willReturn(true)
+            given(productStatisticRepository.findTop5BestSellingProductsSince(any())).willReturn(topProducts)
+            doNothing().whenever(productStatisticRepository).saveAllPopularProducts(any())
 
             // when & then: 예외 없으면 성공
             scheduler.generatePopularProducts()
@@ -49,7 +49,7 @@ class PopularProductSchedulerTest {
         @Test
         fun `인기 상품 조회 결과가 null이면 예외가 발생한다`() {
             // given
-            given(orderRepository.findTop5BestProduct(any())).willReturn(null)
+            given(productStatisticRepository.findTop5BestSellingProductsSince(any())).willReturn(null)
 
             // expect
             assertThatThrownBy {
@@ -61,7 +61,7 @@ class PopularProductSchedulerTest {
         @Test
         fun `인기 상품이 비어있으면 예외가 발생한다`() {
             // given
-            given(orderRepository.findTop5BestProduct(any())).willReturn(emptyList())
+            given(productStatisticRepository.findTop5BestSellingProductsSince(any())).willReturn(emptyList())
 
             // expect
             assertThatThrownBy {

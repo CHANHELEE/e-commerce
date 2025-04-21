@@ -2,6 +2,8 @@ package kr.hhplus.be.server.presentation.payment
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
+import kr.hhplus.be.server.application.payment.PaymentFacade
+import kr.hhplus.be.server.application.payment.model.PaymentCriteria
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 import kr.hhplus.be.server.presentation.common.annotation.SuccessResponse
 import kr.hhplus.be.server.presentation.payment.model.PaymentRequest
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/payment")
-class PaymentController {
+class PaymentController(
+    private val paymentFacade: PaymentFacade,
+) {
 
 
     @Operation(
@@ -22,7 +26,15 @@ class PaymentController {
     @SuccessResponse
     fun pay(
         @RequestBody @Valid request: PaymentRequest.Payment,
-    ): PaymentResponse.Payment =
-        PaymentResponse.Payment(1L)
+    ): PaymentResponse.Payment {
+        val payment = paymentFacade.pay(
+            PaymentCriteria.PlacePayment(
+                request.orderId!!,
+            )
+        )
+        return PaymentResponse.Payment(
+            payment.id
+        )
+    }
 
 }

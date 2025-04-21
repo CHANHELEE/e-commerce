@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.point.model
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
+import kr.hhplus.be.server.domain.point.model.entity.Point
 import kr.hhplus.be.server.fixtures.point.PointFixture
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

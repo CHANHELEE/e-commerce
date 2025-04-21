@@ -5,8 +5,8 @@ import kr.hhplus.be.server.domain.coupon.CouponService
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
-import kr.hhplus.be.server.domain.order.model.Order
 import kr.hhplus.be.server.domain.order.model.OrderCommand
+import kr.hhplus.be.server.domain.order.model.OrderView
 import kr.hhplus.be.server.domain.point.PointService
 import kr.hhplus.be.server.domain.point.model.PointCommand
 import kr.hhplus.be.server.domain.product.ProductService
@@ -24,57 +24,42 @@ class OrderFacade(
 
 
     @Transactional
-    fun placeOrder(orderCriteria: OrderCriteria.PlaceOrder): Order {
+    fun placeOrder(orderCriteria: OrderCriteria.PlaceOrder): OrderView {
 
         val userCoupon = orderCriteria.couponId?.let {
-            val userCoupon = couponService.getUserCouponBy(CouponCommand.UserCoupon(orderCriteria.userId, it))
-            userCoupon.validateUsable()
-            userCoupon
+            couponService.validateUse(CouponCommand.UserCoupon(orderCriteria.userId, it))
         }
 
-        val point = pointService.getPoint(PointCommand.Point(orderCriteria.userId))
-        point.validateUsable()
+        pointService.validateUsable(PointCommand.Point(orderCriteria.userId))
 
-        val orderProducts: List<OrderCommand.PlaceOrderProduct> = orderCriteria.orderedProduct!!.map { orderedProduct ->
-            val stock = productService.getProductStockBy(
-                ProductCommand.ProductStock(
-                    productId = orderedProduct.productId!!,
-                    optionId = orderedProduct.productOptionId!!
+        val placeOrderProductCommands: List<OrderCommand.PlaceOrderProduct> =
+            orderCriteria.orderedProduct!!.map { orderedProduct ->
+
+                productService.validateStock(
+                    ProductCommand.ProductStock(
+                        orderedProduct.productId,
+                        orderedProduct.productOptionId
+                    )
                 )
-            )
-            stock.validateStock()
 
-            val product = productService.getProductBy(ProductCommand.Product(orderedProduct.productId))
-            val price = product.price
+                val product = productService.getBy(ProductCommand.Product(orderedProduct.productId))
 
-            OrderCommand.PlaceOrderProduct(
-                productOptionId = orderedProduct.productOptionId,
-                orderId = 0L,
-                productPrice = price,
-                quantity = orderedProduct.quantity,
-                productId = orderedProduct.productId,
-            )
-        }
+                OrderCommand.PlaceOrderProduct(
+                    productOptionId = orderedProduct.productOptionId,
+                    orderId = 0L,
+                    productPrice = product.price,
+                    quantity = orderedProduct.quantity,
+                    productId = orderedProduct.productId,
+                )
+            }
 
-        val order = orderService.save(
+        val order = orderService.order(
             OrderCommand.PlaceOrder(
                 orderCriteria.userId,
                 userCoupon?.id,
                 OrderStatus.PENDING
-            )
+            ), placeOrderProductCommands
         )
-
-        orderService.saveHistory(
-            OrderCommand.PlaceOrderHistory(
-                order.id,
-                order.status,
-            )
-        )
-
-        val orderProductsWithOrderId = orderProducts.map {
-            it.copy(orderId = order.id)
-        }
-        orderService.saveOrderProducts(orderProductsWithOrderId)
         return order
     }
 }

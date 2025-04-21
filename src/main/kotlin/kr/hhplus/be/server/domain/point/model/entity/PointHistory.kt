@@ -1,0 +1,12 @@
+package kr.hhplus.be.server.domain.point.model.entity
+
+import kr.hhplus.be.server.domain.point.enums.PointHistoryType
+import java.time.LocalDateTime
+
+class PointHistory(
+    var id: Long = 0,
+    var pointId: Long,
+    var point: Long,
+    var type: PointHistoryType,
+    var createdAt: LocalDateTime? = null,
+)

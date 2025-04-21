@@ -1,10 +1,10 @@
 package kr.hhplus.be.server.domain.coupon
 
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
-import kr.hhplus.be.server.domain.coupon.model.UserCoupon
+import kr.hhplus.be.server.domain.coupon.model.entity.UserCoupon
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
-import kr.hhplus.be.server.domain.coupon.model.Coupon
+import kr.hhplus.be.server.domain.coupon.model.entity.Coupon
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -14,10 +14,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.check
-import org.mockito.kotlin.then
-import java.time.LocalDateTime
+import org.mockito.kotlin.*
 
 @ExtendWith(MockitoExtension::class)
 class CouponServiceTest {
@@ -31,6 +28,7 @@ class CouponServiceTest {
     private val userId = 1L
     private val couponId = 10L
     private val command = CouponCommand.UserCoupon(userId, couponId)
+    private val userCouponId = 100L
 
     @Nested
     inner class GetUserCouponBy {
@@ -44,8 +42,11 @@ class CouponServiceTest {
             // when
             val result = couponService.getUserCouponBy(command)
 
-            // then
-            assertThat(result).isEqualTo(userCoupon)
+            //then
+            assertThat(result)
+                .extracting("id", "userId", "couponId")
+                .contains(userCoupon.id, userCoupon.userId, userCoupon.couponId)
+            verify(couponRepository, times(1)).findUserCouponBy(any(), any())
         }
 
         @Test
@@ -58,65 +59,6 @@ class CouponServiceTest {
                 couponService.getUserCouponBy(command)
             }
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.USER_COUPON_NOT_EXIST)
-        }
-    }
-
-    @Nested
-    inner class GetUserCouponWithLockBy {
-
-        @Test
-        fun `사용자 쿠폰이 존재하면 반환된다`() {
-            // given
-            val userCoupon = UserCoupon(id = 2L, userId = userId, couponId = couponId, usedAt = null)
-            given(couponRepository.findUserCouponWithLockBy(userId, couponId)).willReturn(userCoupon)
-
-            // when
-            val result = couponService.getUserCouponWithLockBy(command)
-
-            // then
-            assertThat(result).isEqualTo(userCoupon)
-        }
-
-        @Test
-        fun `사용자 쿠폰이 존재하지 않으면 BusinessException(USER_COUPON_NOT_EXIST)예외가 발생한다`() {
-            // given
-            given(couponRepository.findUserCouponWithLockBy(userId, couponId)).willReturn(null)
-
-            // when & then
-            val exception = assertThrows<BusinessException> {
-                couponService.getUserCouponWithLockBy(command)
-            }
-            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.USER_COUPON_NOT_EXIST)
-        }
-    }
-
-    @Nested
-    inner class UpdateUserCoupon {
-
-        @Test
-        fun `사용자 쿠폰이 정상적으로 업데이트된다`() {
-            // given
-            val now = LocalDateTime.now()
-            val command = CouponCommand.UseCoupon(userCouponId = 1L, usedAt = now)
-            val expected = UserCoupon(
-                id = 1L,
-                userId = 10L,
-                couponId = 100L,
-                usedAt = now
-            )
-
-            given(couponRepository.updateUserCoupon(any())).willReturn(expected)
-
-            // when
-            val result = couponService.updateUserCoupon(command)
-
-            // then
-            then(couponRepository).should().updateUserCoupon(check {
-                assertThat(it.id).isEqualTo(command.userCouponId)
-                assertThat(it.usedAt).isEqualTo(command.usedAt)
-            })
-
-            assertThat(result).isEqualTo(expected)
         }
     }
 
@@ -140,7 +82,10 @@ class CouponServiceTest {
             val result = couponService.getCouponBy(command)
 
             // then
-            assertThat(result).isEqualTo(coupon)
+            assertThat(result)
+                .extracting("id", "amount")
+                .contains(coupon.id, coupon.amount)
+            verify(couponRepository, times(1)).findCouponBy(any())
         }
 
         @Test
@@ -174,8 +119,11 @@ class CouponServiceTest {
             val result = couponService.issue(command)
 
             // then
-            assertThat(result).isEqualTo(userCoupon)
-            assertThat(coupon.amount).isEqualTo(4L) // issue()로 인해 감소 확인
+            assertThat(result)
+                .extracting("id", "userId", "couponId")
+                .contains(userCoupon.id, userCoupon.userId, userCoupon.couponId)
+            verify(couponRepository, times(1)).findCouponWithLockBy(any())
+            verify(couponRepository, times(1)).saveUserCoupon(any())
         }
 
         @Test
@@ -205,6 +153,70 @@ class CouponServiceTest {
             }
 
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.COUPON_OUT_OF_AMOUNT)
+        }
+    }
+
+    @Nested
+    inner class ValidateUse {
+
+        @Test
+        fun `사용 가능한 쿠폰이면 UserCouponView 를 반환한다`() {
+            // given
+            val userCoupon = UserCoupon(id = userCouponId, userId = userId, couponId = couponId, usedAt = null)
+            given(couponRepository.findUserCouponBy(userId, couponId)).willReturn(userCoupon)
+
+            // when
+            val result = couponService.validateUse(CouponCommand.UserCoupon(userId, couponId))
+
+            // then
+            assertThat(result.couponId).isEqualTo(couponId)
+            verify(couponRepository, times(1)).findUserCouponBy(userId, couponId)
+        }
+
+        @Test
+        fun `쿠폰이 존재하지 않으면 BusinessException(USER_COUPON_NOT_EXIST)예외 발생`() {
+            // given
+            given(couponRepository.findUserCouponBy(userId, couponId)).willReturn(null)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                couponService.validateUse(CouponCommand.UserCoupon(userId, couponId))
+            }
+
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.USER_COUPON_NOT_EXIST)
+        }
+    }
+
+    @Nested
+    inner class Use {
+
+        @Test
+        fun `쿠폰을 정상적으로 사용할 수 있다`() {
+            // given
+            val userCoupon = UserCoupon(id = userCouponId, userId = userId, couponId = couponId, usedAt = null)
+            given(couponRepository.findUserCouponWithLockBy(userCouponId)).willReturn(userCoupon)
+            given(couponRepository.saveUserCoupon(any())).willReturn(userCoupon)
+
+            // when
+            val result = couponService.use(CouponCommand.UseCoupon(userCouponId))
+
+            // then
+            assertThat(result.couponId).isEqualTo(couponId)
+            verify(couponRepository, times(1)).findUserCouponWithLockBy(userCouponId)
+            verify(couponRepository, times(1)).saveUserCoupon(any())
+        }
+
+        @Test
+        fun `쿠폰이 존재하지 않으면 BusinessException(USER_COUPON_NOT_EXIST)예외 발생`() {
+            // given
+            given(couponRepository.findUserCouponWithLockBy(userCouponId)).willReturn(null)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                couponService.use(CouponCommand.UseCoupon(userCouponId))
+            }
+
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.USER_COUPON_NOT_EXIST)
         }
     }
 }

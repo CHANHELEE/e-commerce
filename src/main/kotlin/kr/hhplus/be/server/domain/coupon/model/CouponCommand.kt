@@ -11,7 +11,6 @@ class CouponCommand {
 
     data class UseCoupon(
         val userCouponId: Long,
-        val usedAt: LocalDateTime
     )
 
     data class Coupon(
@@ -21,5 +20,10 @@ class CouponCommand {
     data class Issue(
         val couponId: Long,
         val userId: Long,
+    )
+
+    data class UpdateUserCoupon(
+        val id: Long,
+        val usedAt: LocalDateTime,
     )
 }

@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.presentation.statistics
 
 import io.swagger.v3.oas.annotations.Operation
+import kr.hhplus.be.server.domain.statistics.product.ProductStatisticService
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 import kr.hhplus.be.server.presentation.common.annotation.SuccessResponse
 import kr.hhplus.be.server.presentation.statistics.model.StatisticResponse
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/statistic")
-class StatisticController {
+class StatisticController(
+    private val productStaticService: ProductStatisticService,
+) {
 
 
     @Operation(
@@ -22,13 +25,14 @@ class StatisticController {
     )
     @GetMapping("/ranks/top-five")
     @SuccessResponse
-    fun ranks(): List<StatisticResponse.TopFive> =
-        listOf(
-            StatisticResponse.TopFive("테스트 상품1", 1),
-            StatisticResponse.TopFive("테스트 상품2", 2),
-            StatisticResponse.TopFive("테스트 상품3", 3),
-            StatisticResponse.TopFive("테스트 상품4", 4),
-            StatisticResponse.TopFive("테스트 상품5", 5),
-        )
-
+    fun ranks(): List<StatisticResponse.TopFive> {
+        val products = productStaticService.getAllPopularProducts()
+        return products.map {
+            StatisticResponse.TopFive(
+                productId = it.productId,
+                productName = it.productName,
+                rank = it.rank
+            )
+        }
+    }
 }

@@ -1,8 +1,7 @@
 package kr.hhplus.be.server.domain.payment
 
-import kr.hhplus.be.server.domain.payment.PaymentRepository
-import kr.hhplus.be.server.domain.payment.PaymentService
-import kr.hhplus.be.server.domain.payment.model.Payment
+import kr.hhplus.be.server.domain.payment.enums.PaymentStatus
+import kr.hhplus.be.server.domain.payment.model.entity.Payment
 import kr.hhplus.be.server.domain.payment.model.PaymentCommand
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -27,12 +26,14 @@ class PaymentServiceTest {
 
     @Test
     fun `결제가 저장되고 결제 히스토리도 함께 저장된다`() {
+
         // given
         val command = PaymentCommand.PlacePayment(
             orderId = 1L,
             originTotalPrice = 10000L,
             payTotalPrice = 9000L,
-            discountPrice = 1000L
+            discountPrice = 1000L,
+            status = PaymentStatus.SUCCESS,
         )
 
         val savedPayment = Payment(
@@ -42,13 +43,14 @@ class PaymentServiceTest {
             payTotalPrice = command.payTotalPrice,
             discountPrice = command.discountPrice,
             createdAt = LocalDateTime.now(),
-            updatedAt = LocalDateTime.now()
+            updatedAt = LocalDateTime.now(),
+            status = PaymentStatus.SUCCESS,
         )
 
         given(paymentRepository.save(any())).willReturn(savedPayment)
 
         // when
-        val result = paymentService.save(command)
+        paymentService.pay(command)
 
         // then
         then(paymentRepository).should().save(check {
@@ -62,7 +64,5 @@ class PaymentServiceTest {
             assertThat(it.payTotalPrice).isEqualTo(command.payTotalPrice)
             assertThat(it.discountPrice).isEqualTo(command.discountPrice)
         })
-
-        assertThat(result).isEqualTo(savedPayment)
     }
 }

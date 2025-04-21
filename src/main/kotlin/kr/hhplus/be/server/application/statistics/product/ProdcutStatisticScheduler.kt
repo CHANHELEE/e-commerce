@@ -2,7 +2,6 @@ package kr.hhplus.be.server.application.statistics.product
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
-import kr.hhplus.be.server.domain.order.OrderRepository
 import kr.hhplus.be.server.domain.statistics.product.ProductStatisticRepository
 import kr.hhplus.be.server.domain.statistics.product.model.PopularProduct
 import org.springframework.scheduling.annotation.Scheduled
@@ -12,7 +11,6 @@ import java.time.LocalDateTime
 
 @Component
 class PopularProductScheduler(
-    private val orderRepository: OrderRepository,
     private val productStatisticRepository: ProductStatisticRepository,
 ) {
 
@@ -21,9 +19,9 @@ class PopularProductScheduler(
     @Transactional
     fun generatePopularProducts() {
         val start = LocalDateTime.now().toLocalDate().atStartOfDay().minusDays(1)
-        val threeDaysAgo = start.minusDays(2)
+        val startDate = start.minusDays(2)
 
-        val topProducts = orderRepository.findTop5BestProduct(threeDaysAgo)
+        val topProducts = productStatisticRepository.findTop5BestSellingProductsSince(startDate)
             ?: throw BusinessException(BusinessErrorCode.PRODUCT_OPTIONS_NOT_FOUND)
 
         if (topProducts.isEmpty()) {
@@ -33,7 +31,8 @@ class PopularProductScheduler(
         val popularProducts = topProducts.mapIndexed { index, orderProduct ->
             PopularProduct(
                 productId = orderProduct.productId,
-                rank = index + 1
+                name = orderProduct.productName,
+                ranking = index + 1
             )
         }
         productStatisticRepository.saveAllPopularProducts(popularProducts)

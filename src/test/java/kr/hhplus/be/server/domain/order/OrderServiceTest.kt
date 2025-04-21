@@ -4,6 +4,9 @@ import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.order.enums.OrderStatus
 import kr.hhplus.be.server.domain.order.model.*
+import kr.hhplus.be.server.domain.order.model.entity.Order
+import kr.hhplus.be.server.domain.order.model.entity.OrderHistory
+import kr.hhplus.be.server.domain.order.model.entity.OrderProduct
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -26,101 +29,6 @@ class OrderServiceTest {
     @InjectMocks
     lateinit var orderService: OrderService
 
-    @Test
-    fun `save - 주문이 정상적으로 저장된다`() {
-        // given
-        val command = OrderCommand.PlaceOrder(
-            userId = 1L,
-            userCouponId = 100L,
-            status = OrderStatus.PENDING
-        )
-
-        val saved = Order(
-            id = 1L,
-            userId = command.userId,
-            userCouponId = command.userCouponId,
-            status = command.status
-        )
-
-        given(orderRepository.save(any())).willReturn(saved)
-
-        // when
-        val result = orderService.save(command)
-
-        // then
-        then(orderRepository).should().save(check {
-            assertThat(it.userId).isEqualTo(command.userId)
-            assertThat(it.userCouponId).isEqualTo(command.userCouponId)
-            assertThat(it.status).isEqualTo(command.status)
-        })
-
-        assertThat(result.id).isEqualTo(1L)
-    }
-
-    @Test
-    fun `saveHistory - 주문 이력이 정상적으로 저장된다`() {
-        // given
-        val command = OrderCommand.PlaceOrderHistory(
-            orderId = 1L,
-            status = OrderStatus.SUCCESS
-        )
-
-        val history = OrderHistory(
-            id = 99L,
-            orderId = command.orderId,
-            orderStatus = command.status
-        )
-
-        given(orderRepository.saveHistory(any())).willReturn(history)
-
-        // when
-        val result = orderService.saveHistory(command)
-
-        // then
-        then(orderRepository).should().saveHistory(check {
-            assertThat(it.orderId).isEqualTo(command.orderId)
-            assertThat(it.orderStatus).isEqualTo(command.status)
-        })
-
-        assertThat(result.id).isEqualTo(99L)
-    }
-
-    @Test
-    fun `saveOrderProducts - 주문 상품들이 정상적으로 저장된다`() {
-        // given
-        val commands = listOf(
-            OrderCommand.PlaceOrderProduct(
-                productOptionId = 10L,
-                orderId = 1L,
-                productPrice = 1000L,
-                quantity = 2L,
-                productId = 2
-            ),
-            OrderCommand.PlaceOrderProduct(
-                productOptionId = 20L,
-                orderId = 1L,
-                productPrice = 2000L,
-                quantity = 1L,
-                productId = 3
-            )
-        )
-
-        // when
-        orderService.saveOrderProducts(commands)
-
-        // then
-        then(orderRepository).should().saveAllOrderProducts(check {
-            assertThat(it).hasSize(2)
-
-            val first = it[0]
-            val expectedFirst = commands[0]
-            assertThat(first.productOptionId).isEqualTo(expectedFirst.productOptionId)
-            assertThat(first.productPrice).isEqualTo(expectedFirst.productPrice)
-            assertThat(first.quantity).isEqualTo(expectedFirst.quantity)
-            assertThat(first.orderId).isEqualTo(expectedFirst.orderId)
-        })
-    }
-
     @Nested
     inner class GetWithLockBy {
 
@@ -134,7 +42,9 @@ class OrderServiceTest {
             val result = orderService.getWithLockBy(OrderCommand.Order(orderId = 1L))
 
             // then
-            assertThat(result).isEqualTo(order)
+            assertThat(result)
+                .extracting("id", "userId")
+                .contains(order.id, order.userId)
         }
 
         @Test
@@ -187,5 +97,57 @@ class OrderServiceTest {
             }
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.ORDER_PRODUCT_NOT_EXIST)
         }
+    }
+
+    @Test
+    fun `주문을 생성하면 주문, 주문 이력, 주문 상품이 저장된다`() {
+        // given
+        val placeOrder = OrderCommand.PlaceOrder(
+            userId = 1L,
+            userCouponId = 2L,
+            status = OrderStatus.PENDING
+        )
+
+        val placeOrderProducts = listOf(
+            OrderCommand.PlaceOrderProduct(
+                orderId = 0L, // 실제 저장 전에는 0 또는 null
+                productId = 100L,
+                productOptionId = 200L,
+                productPrice = 3000L,
+                quantity = 2L
+            )
+        )
+
+        val savedOrder = Order(
+            id = 10L,
+            userId = placeOrder.userId,
+            userCouponId = placeOrder.userCouponId,
+            status = placeOrder.status
+        )
+
+        given(orderRepository.save(any())).willReturn(savedOrder)
+
+        // when
+        val result = orderService.order(placeOrder, placeOrderProducts)
+
+        // then
+        assertThat(result.id).isEqualTo(savedOrder.id)
+        assertThat(result.status).isEqualTo(OrderStatus.PENDING)
+
+        then(orderRepository).should().save(check<Order> {
+            assertThat(it.userId).isEqualTo(placeOrder.userId)
+            assertThat(it.userCouponId).isEqualTo(placeOrder.userCouponId)
+        })
+
+        then(orderRepository).should().saveHistory(check<OrderHistory> {
+            assertThat(it.orderId).isEqualTo(savedOrder.id)
+            assertThat(it.orderStatus).isEqualTo(savedOrder.status)
+        })
+
+        then(orderRepository).should().saveAllOrderProducts(check {
+            assertThat(it).hasSize(1)
+            assertThat(it[0].productId).isEqualTo(100L)
+            assertThat(it[0].orderId).isEqualTo(savedOrder.id)
+        })
     }
 }

@@ -11,11 +11,11 @@ object ProductCommandFixture {
     )
 }
 
-object ProductOptionCommandFixture {
+object ProductDetailCommandFixture {
 
     fun get(
         productId: Long = 1L,
-    ): ProductCommand.ProductOption = ProductCommand.ProductOption(
+    ): ProductCommand.Detail = ProductCommand.Detail(
         productId = productId,
     )
 }

@@ -11,7 +11,10 @@ class ProductResponse {
         val updatedAt: LocalDateTime,
     )
 
-    data class ProductOption(
+    data class Detail(
+        val id: Long,
+        val name: String,
+        val price: Long,
         val size: String,
         val stock: Long,
     )
