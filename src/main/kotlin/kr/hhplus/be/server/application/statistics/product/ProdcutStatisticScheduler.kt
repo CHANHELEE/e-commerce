@@ -3,7 +3,7 @@ package kr.hhplus.be.server.application.statistics.product
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.statistics.product.ProductStatisticRepository
-import kr.hhplus.be.server.domain.statistics.product.model.PopularProduct
+import kr.hhplus.be.server.domain.statistics.product.model.entity.PopularProduct
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional

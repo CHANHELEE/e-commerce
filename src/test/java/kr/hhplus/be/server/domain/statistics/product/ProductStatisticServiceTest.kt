@@ -3,7 +3,7 @@ package kr.hhplus.be.server.domain.statistics.product
 
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
-import kr.hhplus.be.server.domain.statistics.product.model.PopularProduct
+import kr.hhplus.be.server.domain.statistics.product.model.entity.PopularProduct
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.infrastructure.persistence.statistics
 
 import kr.hhplus.be.server.domain.statistics.product.ProductStatisticRepository
-import kr.hhplus.be.server.domain.statistics.product.model.PopularProduct
+import kr.hhplus.be.server.domain.statistics.product.model.entity.PopularProduct
 import kr.hhplus.be.server.domain.statistics.product.model.PopularProductAggregateView
 import kr.hhplus.be.server.infrastructure.persistence.statistics.model.entity.PopularProductEntity
 import org.springframework.stereotype.Repository
