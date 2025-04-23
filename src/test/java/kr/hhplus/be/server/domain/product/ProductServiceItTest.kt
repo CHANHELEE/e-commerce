@@ -119,7 +119,7 @@ class ProductServiceItTest : IntegrationTestSupport() {
     }
 
     @Test
-    fun `동시성 테스트 - 동시에 재고 차감 시 정확히 처리되어야 한다 (동시성 제어 코드 미적용으로 실패)`() {
+    fun `동시성 테스트 - 동시에 재고 차감 시 정확히 처리되어야 한다`() {
         // given
         val product = productJpaRepository.save(
             ProductEntity(
