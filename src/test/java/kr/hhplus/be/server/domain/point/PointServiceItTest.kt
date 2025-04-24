@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
 
 class PointServiceItTest : IntegrationTestSupport() {
 
@@ -39,7 +40,7 @@ class PointServiceItTest : IntegrationTestSupport() {
         }
 
         @Test
-        fun `동시성 테스트 - 동시에 포인트 충전 시 누락 없이 누적되어야 한다(동시성 제어 코드 미적용으로 실패)`() {
+        fun `동시성 테스트 - 동시에 포인트 충전 시 누락 없이 누적되어야 한다`() {
 
             // given
             val userId = 2L
@@ -104,7 +105,7 @@ class PointServiceItTest : IntegrationTestSupport() {
         }
 
         @Test
-        fun `동시성 테스트 - 동시에 포인트 사용 시 누락이 없이 사용되어야 한다 (동시성 제어 코드 미적용으로 실패)`() {
+        fun `동시성 테스트 - 동시에 포인트 사용 시 누락이 없이 사용되어야 한다`() {
             // given
             val userId = 4L
             val usePerThread = 1_000L
@@ -144,5 +145,46 @@ class PointServiceItTest : IntegrationTestSupport() {
 
             assertThat(result.point).isEqualTo(point.point - totalUsed)
         }
+    }
+
+    @Test
+    fun `동시성 테스트 - 동시에 포인트 사용 시 0원일 때 포인트 사용에 실패해야 한다`() {
+        // given
+        val userId = 5L
+        val usePerThread = 1_000L
+        val threadCount = 1000
+        val successCount = AtomicInteger(0)
+
+        val point = pointJpaRepository.save(
+            PointEntity(
+                userId = userId,
+                point = 20_000L // 총 사용 가능한 포인트
+            )
+        )
+
+        val executorService = Executors.newFixedThreadPool(threadCount)
+        val latch = CountDownLatch(threadCount)
+
+        // when
+        repeat(threadCount) {
+            executorService.submit {
+                try {
+                    pointService.use(
+                        PointCommand.Update(
+                            userId = userId,
+                            amount = usePerThread
+                        )
+                    )
+                    successCount.incrementAndGet()
+                } finally {
+                    latch.countDown()
+                }
+            }
+        }
+
+        latch.await()
+
+        // then
+        assertThat(successCount.get()).isEqualTo(20)
     }
 }

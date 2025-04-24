@@ -43,7 +43,7 @@ class CouponServiceItTest : IntegrationTestSupport() {
         }
 
         @Test
-        fun `동시성 테스트 - 쿠폰 재고 만큼 발급 되어야한다 (동시성 제어 코드 미적용으로 실패)`() {
+        fun `동시성 테스트 - 쿠폰 재고 만큼 발급 되어야한다`() {
 
             // given
             val coupon = couponJpaRepository.save(
