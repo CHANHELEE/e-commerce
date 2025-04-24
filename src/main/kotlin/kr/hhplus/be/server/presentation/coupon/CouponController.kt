@@ -26,7 +26,7 @@ class CouponController(
     fun coupons(@PathVariable couponId: Long): CouponResponse.Coupon {
 
         val coupon = couponService.getCouponBy(CouponCommand.Coupon(couponId))
-        return CouponResponse.Coupon(coupon.id, coupon.amount, coupon.name)
+        return CouponResponse.Coupon(coupon.id, coupon.amount, coupon.name, coupon.discountPrice)
     }
 
 
