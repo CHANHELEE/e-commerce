@@ -8,6 +8,7 @@ import kr.hhplus.be.server.infrastructure.persistence.point.PointJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductOptionJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductStockJpaRepository
+import kr.hhplus.be.server.infrastructure.persistence.statistics.PopularProductJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.UserJpaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -49,6 +50,9 @@ class E2eTestSupport {
 
     @Autowired
     lateinit var orderProductJpaRepository: OrderProductJpaRepository
+
+    @Autowired
+    lateinit var popularProductJpaRepository: PopularProductJpaRepository
 
     lateinit var webTestClient: WebTestClient
 
