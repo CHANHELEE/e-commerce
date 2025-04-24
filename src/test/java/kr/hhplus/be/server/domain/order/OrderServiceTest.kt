@@ -140,11 +140,6 @@ class OrderServiceTest {
             assertThat(it.userCouponId).isEqualTo(placeOrder.userCouponId)
         })
 
-        then(orderRepository).should().saveHistory(check<OrderHistory> {
-            assertThat(it.orderId).isEqualTo(savedOrder.id)
-            assertThat(it.orderStatus).isEqualTo(savedOrder.status)
-        })
-
         then(orderRepository).should().saveAllOrderProducts(check {
             assertThat(it).hasSize(1)
             assertThat(it[0].productId).isEqualTo(100L)

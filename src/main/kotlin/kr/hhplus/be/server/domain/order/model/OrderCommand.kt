@@ -10,11 +10,6 @@ class OrderCommand {
         val status: OrderStatus,
     )
 
-    data class PlaceOrderHistory(
-        val orderId: Long,
-        val status: OrderStatus,
-    )
-
     data class PlaceOrderProduct(
         var productOptionId: Long,
         var productId: Long,
@@ -26,4 +21,10 @@ class OrderCommand {
     data class Order(
         val orderId: Long,
     )
+
+    data class ModifyStatus(
+        val orderId: Long,
+        val status: OrderStatus,
+    )
+
 }

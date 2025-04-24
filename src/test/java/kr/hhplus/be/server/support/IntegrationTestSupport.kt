@@ -1,10 +1,14 @@
 package kr.hhplus.be.server.support
 
 import kr.hhplus.be.server.infrastructure.persistence.coupon.CouponJpaRepository
+import kr.hhplus.be.server.infrastructure.persistence.coupon.UserCouponJpaRepository
+import kr.hhplus.be.server.infrastructure.persistence.order.OrderJpaRepository
+import kr.hhplus.be.server.infrastructure.persistence.order.OrderProductJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.point.PointJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductOptionJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductStockJpaRepository
+import kr.hhplus.be.server.infrastructure.persistence.user.UserJpaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
@@ -31,4 +35,16 @@ class IntegrationTestSupport {
 
     @Autowired
     lateinit var productStockJpaRepository: ProductStockJpaRepository
+
+    @Autowired
+    lateinit var orderJpaRepository: OrderJpaRepository
+
+    @Autowired
+    lateinit var userJpaRepository: UserJpaRepository
+
+    @Autowired
+    lateinit var userCouponJpaRepository: UserCouponJpaRepository
+
+    @Autowired
+    lateinit var orderProductJpaRepository: OrderProductJpaRepository
 }

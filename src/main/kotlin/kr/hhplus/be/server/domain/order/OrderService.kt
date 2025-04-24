@@ -47,13 +47,6 @@ class OrderService(
             )
         )
 
-        orderRepository.saveHistory(
-            OrderHistory(
-                orderId = order.id,
-                orderStatus = order.status,
-            )
-        )
-
         val orderProducts = placeOrderProductCommands.map {
             it.copy(orderId = order.id)
         }
@@ -68,5 +61,23 @@ class OrderService(
             )
         })
         return OrderView.from(order)
+    }
+
+    @Transactional
+    fun modifyStatus(modifyOrderCommand: OrderCommand.ModifyStatus): OrderView {
+
+        val order = orderRepository.findWithLockBy(modifyOrderCommand.orderId)
+            ?: throw BusinessException(BusinessErrorCode.ORDER_NOT_EXIST)
+        order.validateModifiable()
+
+        val modifiedOrder = orderRepository.save(
+            Order(
+                id = order.id,
+                userId = order.userId,
+                userCouponId = order.userCouponId,
+                status = modifyOrderCommand.status,
+            )
+        )
+        return OrderView.from(modifiedOrder)
     }
 }
