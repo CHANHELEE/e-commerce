@@ -17,11 +17,13 @@ class OrderService(
 ) {
 
     @Transactional
-    fun getWithLockBy(orderCommand: OrderCommand.Order): OrderView =
-        OrderView.from(
-            orderRepository.findWithLockBy(orderCommand.orderId)
-                ?: throw BusinessException(BusinessErrorCode.ORDER_NOT_EXIST)
-        )
+    fun getWithLockBy(orderCommand: OrderCommand.Order): OrderView {
+
+        val order = orderRepository.findWithLockBy(orderCommand.orderId)
+            ?: throw BusinessException(BusinessErrorCode.ORDER_NOT_EXIST)
+        order.validateModifiable()
+        return OrderView.from(order)
+    }
 
 
     fun getAllActiveOrderProductsBy(orderCommand: OrderCommand.Order): List<OrderProductView> {
