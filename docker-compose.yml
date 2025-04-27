@@ -1,17 +1,21 @@
-version: '3'
 services:
   mysql:
     image: mysql:8.0
-    ports:
-      - "3306:3306"
+    platform: linux/amd64
+    container_name: ecommerce
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=application
-      - MYSQL_PASSWORD=application
-      - MYSQL_DATABASE=hhplus
+      MYSQL_ROOT_PASSWORD: ecommerce
+      MYSQL_DATABASE: ecommerce
+    ports:
+      - "33306:3306"
     volumes:
-      - ./data/mysql/:/var/lib/mysql
+      - /Users/lee/Documents/개인공부/항해99/2주차/과제/docker/volume:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
 
-networks:
-  default:
-    driver: bridge
+  redis:
+    image: redis:7.2
+    platform: linux/amd64
+    container_name: ecommerce-redis
+    ports:
+      - "36379:6379"
+    command: ["redis-server", "--requirepass", "ecommerce"]

@@ -10,6 +10,7 @@ import kr.hhplus.be.server.infrastructure.persistence.product.ProductOptionJpaRe
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductStockJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.statistics.PopularProductJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.UserJpaRepository
+import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
@@ -55,6 +56,9 @@ class E2eTestSupport {
     lateinit var popularProductJpaRepository: PopularProductJpaRepository
 
     lateinit var webTestClient: WebTestClient
+
+    @Autowired
+    lateinit var redissonClient: RedissonClient
 
     @LocalServerPort
     var port: Int = 28080

@@ -51,9 +51,11 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 
-    // DB
+    // infra
 	runtimeOnly("com.mysql:mysql-connector-j")
 	implementation("org.springframework.boot:spring-boot-starter-jooq")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.redisson:redisson-spring-boot-starter:3.45.1")
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")

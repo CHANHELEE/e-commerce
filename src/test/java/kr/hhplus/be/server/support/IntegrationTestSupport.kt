@@ -9,6 +9,7 @@ import kr.hhplus.be.server.infrastructure.persistence.product.ProductJpaReposito
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductOptionJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductStockJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.UserJpaRepository
+import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
@@ -47,4 +48,7 @@ class IntegrationTestSupport {
 
     @Autowired
     lateinit var orderProductJpaRepository: OrderProductJpaRepository
+
+    @Autowired
+    lateinit var redissonClient: RedissonClient
 }
