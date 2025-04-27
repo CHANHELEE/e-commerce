@@ -40,4 +40,21 @@ class OrderTest {
             order.validateModifiable()
         }
     }
+
+    @Test
+    fun `주문 상태 변경 시 주문이 SUCCESS 상태 일 경우 상태 변경에 실패한다`() {
+
+        //given
+        val order = Order(
+            id = 1L,
+            userId = 100L,
+            status = OrderStatus.SUCCESS
+        )
+
+        // when & then
+        val exception = assertThrows<BusinessException> {
+            order.modifyStatusTo(OrderStatus.FAIL)
+        }
+        assertEquals(BusinessErrorCode.ORDER_ALREADY_COMPLETED, exception.errorCode)
+    }
 }

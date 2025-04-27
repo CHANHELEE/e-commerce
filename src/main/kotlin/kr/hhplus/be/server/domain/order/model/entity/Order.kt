@@ -9,14 +9,27 @@ class Order(
     val id: Long = 0,
     val userId: Long,
     val userCouponId: Long? = null,
-    val status: OrderStatus,
+    status: OrderStatus,
     var createdAt: LocalDateTime = LocalDateTime.now(),
     var updatedAt: LocalDateTime = LocalDateTime.now(),
     var deletedAt: LocalDateTime? = null,
 ) {
+
+    var status: OrderStatus = status
+        private set
+
     fun validateModifiable() {
         require(status != OrderStatus.SUCCESS) {
             throw BusinessException(BusinessErrorCode.ORDER_ALREADY_COMPLETED)
         }
+    }
+
+    fun modifyStatusTo(target: OrderStatus) {
+
+        require(status != OrderStatus.SUCCESS) {
+            throw BusinessException(BusinessErrorCode.ORDER_ALREADY_COMPLETED)
+        }
+
+        status = target
     }
 }

@@ -68,16 +68,9 @@ class OrderService(
 
         val order = orderRepository.findWithLockBy(modifyOrderCommand.orderId)
             ?: throw BusinessException(BusinessErrorCode.ORDER_NOT_EXIST)
-        order.validateModifiable()
+        order.modifyStatusTo(modifyOrderCommand.status)
 
-        val modifiedOrder = orderRepository.save(
-            Order(
-                id = order.id,
-                userId = order.userId,
-                userCouponId = order.userCouponId,
-                status = modifyOrderCommand.status,
-            )
-        )
+        val modifiedOrder = orderRepository.save(order)
         return OrderView.from(modifiedOrder)
     }
 }
