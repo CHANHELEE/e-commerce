@@ -17,11 +17,13 @@ class OrderService(
 ) {
 
     @Transactional
-    fun getWithLockBy(orderCommand: OrderCommand.Order): OrderView =
-        OrderView.from(
-            orderRepository.findWithLockBy(orderCommand.orderId)
-                ?: throw BusinessException(BusinessErrorCode.ORDER_NOT_EXIST)
-        )
+    fun getWithLockBy(orderCommand: OrderCommand.Order): OrderView {
+
+        val order = orderRepository.findWithLockBy(orderCommand.orderId)
+            ?: throw BusinessException(BusinessErrorCode.ORDER_NOT_EXIST)
+        order.validateModifiable()
+        return OrderView.from(order)
+    }
 
 
     fun getAllActiveOrderProductsBy(orderCommand: OrderCommand.Order): List<OrderProductView> {
@@ -45,13 +47,6 @@ class OrderService(
             )
         )
 
-        orderRepository.saveHistory(
-            OrderHistory(
-                orderId = order.id,
-                orderStatus = order.status,
-            )
-        )
-
         val orderProducts = placeOrderProductCommands.map {
             it.copy(orderId = order.id)
         }
@@ -66,5 +61,16 @@ class OrderService(
             )
         })
         return OrderView.from(order)
+    }
+
+    @Transactional
+    fun modifyStatus(modifyOrderCommand: OrderCommand.ModifyStatus): OrderView {
+
+        val order = orderRepository.findWithLockBy(modifyOrderCommand.orderId)
+            ?: throw BusinessException(BusinessErrorCode.ORDER_NOT_EXIST)
+        order.modifyStatusTo(modifyOrderCommand.status)
+
+        val modifiedOrder = orderRepository.save(order)
+        return OrderView.from(modifiedOrder)
     }
 }

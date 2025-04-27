@@ -19,6 +19,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.check
 import org.mockito.kotlin.given
 import org.mockito.kotlin.then
+import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
 class OrderServiceTest {
@@ -137,11 +138,6 @@ class OrderServiceTest {
         then(orderRepository).should().save(check<Order> {
             assertThat(it.userId).isEqualTo(placeOrder.userId)
             assertThat(it.userCouponId).isEqualTo(placeOrder.userCouponId)
-        })
-
-        then(orderRepository).should().saveHistory(check<OrderHistory> {
-            assertThat(it.orderId).isEqualTo(savedOrder.id)
-            assertThat(it.orderStatus).isEqualTo(savedOrder.status)
         })
 
         then(orderRepository).should().saveAllOrderProducts(check {

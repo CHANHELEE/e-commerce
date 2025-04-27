@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.payment.model
 
+import kr.hhplus.be.server.domain.payment.enums.PaymentStatus
 import kr.hhplus.be.server.domain.payment.model.entity.Payment
 import java.time.LocalDateTime
 
@@ -8,6 +9,7 @@ data class PaymentView(
     val orderId: Long,
     val originTotalPrice: Long,
     val payTotalPrice: Long,
+    val status: PaymentStatus,
     val discountPrice: Long?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime?,
@@ -22,6 +24,7 @@ data class PaymentView(
                 discountPrice = entity.discountPrice,
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
+                status = entity.status
             )
         }
     }

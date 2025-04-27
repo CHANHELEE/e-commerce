@@ -154,6 +154,21 @@ class CouponServiceTest {
 
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.COUPON_OUT_OF_AMOUNT)
         }
+
+        @Test
+        fun `사용자에게 이미 발급된 쿠폰이면 BusinessException(COUPON_ALREADY_ISSUED)예외가 발생한다`() {
+            // given
+            val command = CouponCommand.Issue(userId = 10L, couponId = 1L)
+            val useCoupon = UserCoupon(couponId = command.couponId, userId = command.userId)
+            given(couponRepository.findUserCouponBy(command.userId, command.couponId)).willReturn(useCoupon)
+
+            // when & then
+            val exception = assertThrows<BusinessException> {
+                couponService.issue(command)
+            }
+
+            assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.COUPON_ALREADY_ISSUED)
+        }
     }
 
     @Nested

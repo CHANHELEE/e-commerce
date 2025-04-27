@@ -29,6 +29,9 @@ class CouponService(
     @Transactional
     fun issue(couponCommand: CouponCommand.Issue): UserCouponView {
 
+        couponRepository.findUserCouponBy(couponCommand.userId, couponCommand.couponId)
+            ?.let { throw BusinessException(BusinessErrorCode.COUPON_ALREADY_ISSUED) }
+
         val coupon = couponRepository.findCouponWithLockBy(couponCommand.couponId)
             ?: throw BusinessException(BusinessErrorCode.COUPON_NOT_EXIST)
         coupon.issue()

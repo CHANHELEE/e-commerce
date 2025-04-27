@@ -37,5 +37,12 @@ class OrderHistoryEntity(
                 status = orderHistory.orderStatus,
             )
         }
+
+        fun from(orderEntity: OrderEntity): OrderHistoryEntity {
+            return OrderHistoryEntity(
+                orderId = orderEntity.id,
+                status = orderEntity.status,
+            )
+        }
     }
 }

@@ -3,12 +3,12 @@ package kr.hhplus.be.server.infrastructure.persistence.order
 
 import kr.hhplus.be.server.domain.order.OrderRepository
 import kr.hhplus.be.server.domain.order.model.entity.Order
-import kr.hhplus.be.server.domain.order.model.entity.OrderHistory
 import kr.hhplus.be.server.domain.order.model.entity.OrderProduct
 import kr.hhplus.be.server.infrastructure.persistence.order.model.entity.OrderEntity
 import kr.hhplus.be.server.infrastructure.persistence.order.model.entity.OrderHistoryEntity
 import kr.hhplus.be.server.infrastructure.persistence.order.model.entity.OrderProductEntity
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class OrderRepositoryImpl(
@@ -17,12 +17,11 @@ class OrderRepositoryImpl(
     private val orderProductJpaRepository: OrderProductJpaRepository,
 ) : OrderRepository {
 
+    @Transactional
     override fun save(order: Order): Order {
-        return orderJpaRepository.save(OrderEntity.from(order)).toDomain()
-    }
-
-    override fun saveHistory(orderHistory: OrderHistory): OrderHistory {
-        return orderHistoryJpaRepository.save(OrderHistoryEntity.from(orderHistory)).toDomain()
+        val order = orderJpaRepository.save(OrderEntity.from(order))
+        orderHistoryJpaRepository.save(OrderHistoryEntity.from(order))
+        return order.toDomain()
     }
 
     override fun saveAllOrderProducts(orderProducts: List<OrderProduct>) {

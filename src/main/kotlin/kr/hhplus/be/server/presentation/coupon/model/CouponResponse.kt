@@ -6,6 +6,7 @@ class CouponResponse {
         val id: Long,
         val amount: Long,
         val name: String,
+        val discountPrice: Long,
     )
 
     data class Issue(

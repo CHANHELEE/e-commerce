@@ -54,9 +54,6 @@ dependencies {
     // DB
 	runtimeOnly("com.mysql:mysql-connector-j")
 	implementation("org.springframework.boot:spring-boot-starter-jooq")
-	jooqGenerator("com.mysql:mysql-connector-j")
-	jooqGenerator("org.jooq:jooq-meta:3.18.10")
-	jooqGenerator("org.jooq:jooq-codegen:3.18.10")
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -66,6 +63,7 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	dependencies {
 		testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+		testImplementation("org.springframework.boot:spring-boot-starter-webflux")
 	}
 
 	// Swagger (springdoc-openapi)

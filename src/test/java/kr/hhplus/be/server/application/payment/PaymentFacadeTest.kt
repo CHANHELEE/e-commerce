@@ -11,6 +11,7 @@ import kr.hhplus.be.server.domain.order.model.OrderCommand
 import kr.hhplus.be.server.domain.order.model.OrderProductView
 import kr.hhplus.be.server.domain.order.model.OrderView
 import kr.hhplus.be.server.domain.payment.PaymentService
+import kr.hhplus.be.server.domain.payment.enums.PaymentStatus
 import kr.hhplus.be.server.domain.payment.model.PaymentView
 import kr.hhplus.be.server.domain.payment.model.entity.Payment
 import kr.hhplus.be.server.domain.point.PointService
@@ -25,6 +26,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import org.springframework.context.ApplicationEventPublisher
 import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -44,6 +46,9 @@ class PaymentFacadeTest {
 
     @Mock
     lateinit var paymentService: PaymentService
+
+    @Mock
+    lateinit var applicationEventPublisher: ApplicationEventPublisher
 
     @InjectMocks
     lateinit var paymentFacade: PaymentFacade
@@ -123,7 +128,8 @@ class PaymentFacadeTest {
             payTotalPrice = 9000L,
             discountPrice = 1000L,
             createdAt = LocalDateTime.now(),
-            updatedAt = LocalDateTime.now()
+            updatedAt = LocalDateTime.now(),
+            status = PaymentStatus.SUCCESS
         )
 
         given(orderService.getWithLockBy(OrderCommand.Order(orderId))).willReturn(order)

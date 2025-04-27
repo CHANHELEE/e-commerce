@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.domain.statistics.product
 
-import kr.hhplus.be.server.domain.statistics.product.model.PopularProduct
+import kr.hhplus.be.server.domain.statistics.product.model.entity.PopularProduct
 import kr.hhplus.be.server.domain.statistics.product.model.PopularProductAggregateView
 import java.time.LocalDateTime
 

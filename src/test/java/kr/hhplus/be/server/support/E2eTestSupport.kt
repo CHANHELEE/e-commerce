@@ -8,18 +8,21 @@ import kr.hhplus.be.server.infrastructure.persistence.point.PointJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductOptionJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductStockJpaRepository
+import kr.hhplus.be.server.infrastructure.persistence.statistics.PopularProductJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.UserJpaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.reactive.server.WebTestClient
 import org.testcontainers.junit.jupiter.Testcontainers
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class IntegrationTestSupport {
+class E2eTestSupport {
 
     @Autowired
     lateinit var couponJpaRepository: CouponJpaRepository
@@ -47,4 +50,13 @@ class IntegrationTestSupport {
 
     @Autowired
     lateinit var orderProductJpaRepository: OrderProductJpaRepository
+
+    @Autowired
+    lateinit var popularProductJpaRepository: PopularProductJpaRepository
+
+    lateinit var webTestClient: WebTestClient
+
+    @LocalServerPort
+    var port: Int = 28080
+
 }
