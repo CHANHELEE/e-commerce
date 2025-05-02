@@ -6,6 +6,6 @@ import java.time.LocalDateTime
 class OrderHistory(
     val id: Long = 0,
     val orderId: Long,
-    var orderStatus: OrderStatus,
-    var createdAt: LocalDateTime = LocalDateTime.now(),
+    val orderStatus: OrderStatus,
+    val createdAt: LocalDateTime = LocalDateTime.now(),
 )
