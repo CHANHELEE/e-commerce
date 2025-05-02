@@ -19,7 +19,7 @@ class PopularProductEntity(
     val productId: Long,
 
     @Column(nullable = false, length = 50)
-    val name: String,
+    var name: String,
 
     @Column(nullable = false)
     val ranking: Int

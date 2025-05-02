@@ -7,9 +7,9 @@ class Payment(
     val id: Long = 0,
     val orderId: Long,
     val originTotalPrice: Long,
-    val status: PaymentStatus,
-    val payTotalPrice: Long,
-    val discountPrice: Long? = null,
+    var status: PaymentStatus,
+    var payTotalPrice: Long,
+    var discountPrice: Long? = null,
     var createdAt: LocalDateTime = LocalDateTime.now(),
     var updatedAt: LocalDateTime = LocalDateTime.now(),
 )

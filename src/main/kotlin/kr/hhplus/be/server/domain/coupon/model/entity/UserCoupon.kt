@@ -6,8 +6,8 @@ import java.time.LocalDateTime
 
 class UserCoupon(
     val id: Long = 0,
-    var couponId: Long,
-    var userId: Long,
+    val couponId: Long,
+    val userId: Long,
     var createdAt: LocalDateTime = LocalDateTime.now(),
     var updatedAt: LocalDateTime = LocalDateTime.now(),
     var usedAt: LocalDateTime? = null,
