@@ -28,6 +28,6 @@ class PointRepositoryImpl(
     }
 
     override fun findUserPointBy(userId: Long): Point? {
-        return pointJpaRepository.findByIdOrNull(userId)?.toDomain()
+        return pointJpaRepository.findByUserId(userId)?.toDomain()
     }
 }
