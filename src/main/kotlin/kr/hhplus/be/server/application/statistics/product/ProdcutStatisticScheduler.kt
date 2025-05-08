@@ -35,6 +35,7 @@ class PopularProductScheduler(
                 ranking = index + 1
             )
         }
+        productStatisticRepository.deleteAllPopularProducts()
         productStatisticRepository.saveAllPopularProducts(popularProducts)
     }
 }

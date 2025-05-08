@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.support
 
+import kr.hhplus.be.server.domain.statistics.product.ProductStatisticRepository
 import kr.hhplus.be.server.infrastructure.persistence.coupon.CouponJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.coupon.UserCouponJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.order.OrderJpaRepository
@@ -54,6 +55,9 @@ class E2eTestSupport {
 
     @Autowired
     lateinit var popularProductJpaRepository: PopularProductJpaRepository
+
+    @Autowired
+    lateinit var productStatisticRepository: ProductStatisticRepository
 
     lateinit var webTestClient: WebTestClient
 
