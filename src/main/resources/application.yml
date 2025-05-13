@@ -25,4 +25,9 @@ spring:
     properties:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 36379
+      password: ecommerce
 

@@ -46,14 +46,15 @@ class CouponServiceItTest : IntegrationTestSupport() {
         fun `동시성 테스트 - 쿠폰 재고 만큼 발급 되어야한다`() {
 
             // given
+            val couponAmount = 10L
             val coupon = couponJpaRepository.save(
                 CouponEntity(
-                    amount = 10,
+                    amount = couponAmount,
                     discountPrice = 1000,
                     name = "테스트쿠폰"
                 )
             )
-            val count = coupon.amount.toInt() + 10
+            val count = coupon.amount.toInt() + 100
             val executorService = Executors.newFixedThreadPool(count)
             val latch = CountDownLatch(count)
             val successCount = AtomicInteger(0)
@@ -80,7 +81,7 @@ class CouponServiceItTest : IntegrationTestSupport() {
 
             // then
             val resultCoupon = couponJpaRepository.findByIdOrNull(coupon.id)!!
-            assertThat(successCount.get()).isEqualTo(10)
+            assertThat(successCount.get()).isEqualTo(couponAmount)
             assertThat(resultCoupon.amount).isEqualTo(0)
         }
 

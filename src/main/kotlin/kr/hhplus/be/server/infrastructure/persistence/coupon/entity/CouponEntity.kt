@@ -13,13 +13,13 @@ class CouponEntity(
     val id: Long = 0,
 
     @Column(nullable = false)
-    val amount: Long,
+    var amount: Long,
 
     @Column(name = "discount_price", nullable = false)
     val discountPrice: Long,
 
     @Column(nullable = false, length = 50)
-    val name: String
+    var name: String
 
 ) : BaseEntity()
 {

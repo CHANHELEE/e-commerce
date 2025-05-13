@@ -1,7 +1,10 @@
 package kr.hhplus.be.server.domain.coupon
 
 import kr.hhplus.be.server.common.BusinessException
+import kr.hhplus.be.server.common.annotations.DistributedLock
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
+import kr.hhplus.be.server.common.model.DistributedLockKeys
+import kr.hhplus.be.server.common.model.DistributedLockPrefixes
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.coupon.model.CouponView
 import kr.hhplus.be.server.domain.coupon.model.UserCouponView
@@ -26,6 +29,10 @@ class CouponService(
                 ?: throw BusinessException(BusinessErrorCode.COUPON_NOT_EXIST)
         )
 
+    @DistributedLock(
+        key = DistributedLockKeys.ISSUE_COUPON,
+        prefix = DistributedLockPrefixes.ISSUE_COUPON,
+    )
     @Transactional
     fun issue(couponCommand: CouponCommand.Issue): UserCouponView {
 

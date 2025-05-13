@@ -3,9 +3,13 @@ package kr.hhplus.be.server.application.payment
 import kr.hhplus.be.server.application.payment.model.PaymentCriteria
 import kr.hhplus.be.server.application.payment.model.PaymentTransactionalEvent
 import kr.hhplus.be.server.common.BusinessException
+import kr.hhplus.be.server.common.annotations.DistributedLock
+import kr.hhplus.be.server.common.model.DistributedLockKeys
+import kr.hhplus.be.server.common.model.DistributedLockPrefixes
 import kr.hhplus.be.server.domain.coupon.CouponService
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.order.OrderService
+import kr.hhplus.be.server.domain.order.enums.OrderStatus
 import kr.hhplus.be.server.domain.order.model.OrderCommand
 import kr.hhplus.be.server.domain.payment.PaymentService
 import kr.hhplus.be.server.domain.payment.enums.PaymentStatus
@@ -30,6 +34,10 @@ class PaymentFacade(
 ) {
 
 
+    @DistributedLock(
+        key = DistributedLockKeys.PAYMENT_ORDER,
+        prefix = DistributedLockPrefixes.PAYMENT_ORDER,
+    )
     @Transactional
     fun pay(paymentCriteria: PaymentCriteria.PlacePayment): PaymentView {
 
@@ -58,6 +66,13 @@ class PaymentFacade(
 
             val payTotalPrice = originTotalPrice - (coupon?.discountPrice ?: 0L)
             pointService.use(PointCommand.Update(order.userId, payTotalPrice))
+
+            orderService.modifyStatus(
+                OrderCommand.ModifyStatus(
+                    orderId = order.id,
+                    status = OrderStatus.SUCCESS
+                )
+            )
 
             val payment = paymentService.pay(
                 PaymentCommand.PlacePayment(

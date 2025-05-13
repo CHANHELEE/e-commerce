@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 class Point(
     val id: Long = 0,
-    var userId: Long,
+    val userId: Long,
     point: Long,
     var createdAt: LocalDateTime = LocalDateTime.now(),
     var updatedAt: LocalDateTime = LocalDateTime.now(),

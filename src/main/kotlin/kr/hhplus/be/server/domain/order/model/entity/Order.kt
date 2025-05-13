@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 class Order(
     val id: Long = 0,
     val userId: Long,
-    val userCouponId: Long? = null,
+    var userCouponId: Long? = null,
     status: OrderStatus,
     var createdAt: LocalDateTime = LocalDateTime.now(),
     var updatedAt: LocalDateTime = LocalDateTime.now(),
