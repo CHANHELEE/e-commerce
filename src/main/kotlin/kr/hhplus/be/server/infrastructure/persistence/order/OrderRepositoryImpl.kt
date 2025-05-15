@@ -33,7 +33,7 @@ class OrderRepositoryImpl(
     }
 
     override fun findAllActiveOrderProductsBy(orderId: Long): List<OrderProduct>? {
-        val activeOrderProducts = orderProductJpaRepository.findAllByOrderIdAndDeletedAtIsNotNull(orderId)
+        val activeOrderProducts = orderProductJpaRepository.findAllByOrderIdAndDeletedAtIsNull(orderId)
         return activeOrderProducts.map { it.toDomain() }
     }
 }
