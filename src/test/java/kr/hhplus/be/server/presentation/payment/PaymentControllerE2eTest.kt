@@ -9,8 +9,10 @@ import kr.hhplus.be.server.infrastructure.persistence.point.entity.PointEntity
 import kr.hhplus.be.server.infrastructure.persistence.product.model.entity.ProductEntity
 import kr.hhplus.be.server.infrastructure.persistence.product.model.entity.ProductOptionEntity
 import kr.hhplus.be.server.infrastructure.persistence.product.model.entity.ProductStockEntity
+import kr.hhplus.be.server.infrastructure.persistence.statistics.redis.PopularProductKeyPrefix
 import kr.hhplus.be.server.infrastructure.persistence.user.entity.UserEntity
 import kr.hhplus.be.server.support.E2eTestSupport
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -43,6 +45,12 @@ class PaymentControllerE2eTest : E2eTestSupport() {
             .expectStatus().isOk
             .expectBody()
             .jsonPath("$.data.id").exists()
+
+        val entries = redisTemplate.opsForZSet()
+            .rangeWithScores("${PopularProductKeyPrefix.Daily.prefix}", 0, -1)
+
+        Assertions.assertThat(entries).isNotNull()
+        Assertions.assertThat(entries).hasSizeGreaterThan(0)
     }
 
     private fun createTestOrder(): Long {
