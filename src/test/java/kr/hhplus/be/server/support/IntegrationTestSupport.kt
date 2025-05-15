@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.support
 
-import kr.hhplus.be.server.infrastructure.persistence.coupon.CouponJpaRepository
-import kr.hhplus.be.server.infrastructure.persistence.coupon.UserCouponJpaRepository
+import kr.hhplus.be.server.infrastructure.persistence.coupon.jpa.CouponJpaRepository
+import kr.hhplus.be.server.infrastructure.persistence.coupon.jpa.UserCouponJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.order.OrderJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.order.OrderProductJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.point.PointJpaRepository
@@ -15,6 +15,7 @@ import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.junit.jupiter.Testcontainers
 
@@ -59,4 +60,7 @@ class IntegrationTestSupport {
 
     @Autowired
     lateinit var redissonClient: RedissonClient
+
+    @Autowired
+    lateinit var redisTemplate: RedisTemplate<String, String>
 }

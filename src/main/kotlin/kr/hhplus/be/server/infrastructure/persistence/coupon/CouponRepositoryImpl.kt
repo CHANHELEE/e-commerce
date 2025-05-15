@@ -5,6 +5,8 @@ import kr.hhplus.be.server.domain.coupon.model.entity.Coupon
 import kr.hhplus.be.server.domain.coupon.model.entity.UserCoupon
 import kr.hhplus.be.server.infrastructure.persistence.coupon.entity.CouponEntity
 import kr.hhplus.be.server.infrastructure.persistence.coupon.entity.UserCouponEntity
+import kr.hhplus.be.server.infrastructure.persistence.coupon.jpa.CouponJpaRepository
+import kr.hhplus.be.server.infrastructure.persistence.coupon.jpa.UserCouponJpaRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 

@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.presentation.coupon
 
 import kr.hhplus.be.server.infrastructure.persistence.coupon.entity.CouponEntity
+import kr.hhplus.be.server.infrastructure.persistence.coupon.redis.CouponIssueKeyPrefix
 import kr.hhplus.be.server.infrastructure.persistence.user.entity.UserEntity
 import kr.hhplus.be.server.presentation.coupon.model.CouponRequest
 import kr.hhplus.be.server.support.E2eTestSupport
@@ -53,13 +54,16 @@ class CouponControllerE2eTest : E2eTestSupport() {
             )
         )
 
+        val couponAmount = 50L
         val coupon = couponJpaRepository.save(
             CouponEntity(
-                amount = 50L,
+                amount = couponAmount,
                 name = "test_coupon",
                 discountPrice = 1000L,
             )
         )
+
+        redisTemplate.opsForValue().set("${CouponIssueKeyPrefix.COUPON_AMOUNT.prefix}${coupon.id}", couponAmount.toString())
 
         val request = CouponRequest.Issue(
             couponId = coupon.id,

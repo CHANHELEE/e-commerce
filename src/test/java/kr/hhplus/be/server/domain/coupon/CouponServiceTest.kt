@@ -22,6 +22,9 @@ class CouponServiceTest {
     @Mock
     lateinit var couponRepository: CouponRepository
 
+    @Mock
+    lateinit var couponIssueRequestRepository: CouponIssueRequestRepository
+
     @InjectMocks
     lateinit var couponService: CouponService
 
@@ -233,5 +236,22 @@ class CouponServiceTest {
 
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.USER_COUPON_NOT_EXIST)
         }
+    }
+
+    @Test
+    fun `정상적으로 쿠폰 발급 요청이 처리되면 발급 요청이 큐에 저장된다`() {
+
+        // given
+        whenever(couponIssueRequestRepository.getCouponAmount(couponId)).thenReturn(10L)
+        whenever(couponIssueRequestRepository.saveRequestingUser(userId, couponId)).thenReturn(true)
+        whenever(couponIssueRequestRepository.decreaseCouponAmount(couponId)).thenReturn(9L)
+
+        // when
+        val result = couponService.requestIssue(CouponCommand.Issue(couponId, userId))
+
+        // then
+        assertThat(userId).isEqualTo(result.userId)
+        assertThat(couponId).isEqualTo(result.couponId)
+        verify(couponIssueRequestRepository).saveIssueRequest(userId, couponId)
     }
 }
