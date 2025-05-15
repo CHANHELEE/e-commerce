@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.persistence.statistics
+package kr.hhplus.be.server.infrastructure.persistence.statistics.redis
 
 import kr.hhplus.be.server.domain.statistics.product.model.entity.PopularProduct
 
