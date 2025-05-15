@@ -10,8 +10,8 @@ import kr.hhplus.be.server.infrastructure.persistence.point.PointJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductOptionJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.ProductStockJpaRepository
-import kr.hhplus.be.server.infrastructure.persistence.statistics.PopularProductJpaRepository
-import kr.hhplus.be.server.infrastructure.persistence.statistics.ProductStatisticRedisRepository
+import kr.hhplus.be.server.infrastructure.persistence.statistics.jpa.PopularProductJpaRepository
+import kr.hhplus.be.server.infrastructure.persistence.statistics.redis.ProductStatisticRedisRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.UserJpaRepository
 import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
