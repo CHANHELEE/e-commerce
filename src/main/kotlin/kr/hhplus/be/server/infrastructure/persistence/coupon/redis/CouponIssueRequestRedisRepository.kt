@@ -32,4 +32,10 @@ class CouponIssueRequestRedisRepository(
         redisTemplate.opsForList()
             .rightPush("${CouponIssueKeyPrefix.ISSUE_TARGET.prefix}$couponId", userId.toString())
     }
+
+    fun findRequestForIssue(couponId: Long): Long? {
+        return redisTemplate.opsForList()
+            .leftPop("${CouponIssueKeyPrefix.ISSUE_TARGET.prefix}$couponId")
+            ?.toLong()
+    }
 }

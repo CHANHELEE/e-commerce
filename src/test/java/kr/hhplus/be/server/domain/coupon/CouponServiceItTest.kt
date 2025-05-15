@@ -15,9 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class CouponServiceItTest : IntegrationTestSupport() {
 
-    @Autowired
-    lateinit var couponService: CouponService
-
     @Nested
     inner class Issue {
 

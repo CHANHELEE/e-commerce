@@ -31,10 +31,7 @@ class CouponService(
                 ?: throw BusinessException(BusinessErrorCode.COUPON_NOT_EXIST)
         )
 
-    @DistributedLock(
-        key = DistributedLockKeys.ISSUE_COUPON,
-        prefix = DistributedLockPrefixes.ISSUE_COUPON,
-    )
+
     @Transactional
     fun issue(couponCommand: CouponCommand.Issue): UserCouponView {
 
@@ -71,7 +68,7 @@ class CouponService(
 
     fun requestIssue(couponCommand: CouponCommand.Issue): CouponIssueRequestView {
 
-        val couponAmount = couponIssueRequestRepository.getCouponAmount(couponCommand.couponId)
+        val couponAmount = couponIssueRequestRepository.findCouponAmount(couponCommand.couponId)
             ?: throw BusinessException(BusinessErrorCode.COUPON_NOT_EXIST)
         if (couponAmount <= 0) {
             throw BusinessException(BusinessErrorCode.COUPON_NOT_EXIST)
@@ -94,5 +91,9 @@ class CouponService(
 
         couponIssueRequestRepository.saveIssueRequest(couponCommand.userId, couponCommand.couponId)
         return CouponIssueRequestView(couponId = couponCommand.couponId, userId = couponCommand.userId)
+    }
+
+    fun findRequestForIssue(couponId: Long): Long? {
+        return couponIssueRequestRepository.findRequestForIssue(couponId)
     }
 }

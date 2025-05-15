@@ -13,11 +13,11 @@ class CouponIssueRequestRepositoryImpl(
         couponIssueRequestRedisRepository.saveIssueRequest(userId = userId, couponId = couponId)
     }
 
-    override fun findRequestToIssue(couponId: Long): Long? {
-        TODO("Not yet implemented")
+    override fun findRequestForIssue(couponId: Long): Long? {
+        return couponIssueRequestRedisRepository.findRequestForIssue(couponId)
     }
 
-    override fun getCouponAmount(couponId: Long): Long? {
+    override fun findCouponAmount(couponId: Long): Long? {
         return couponIssueRequestRedisRepository.findCouponAmount(couponId)
     }
 

@@ -242,7 +242,7 @@ class CouponServiceTest {
     fun `정상적으로 쿠폰 발급 요청이 처리되면 발급 요청이 큐에 저장된다`() {
 
         // given
-        whenever(couponIssueRequestRepository.getCouponAmount(couponId)).thenReturn(10L)
+        whenever(couponIssueRequestRepository.findCouponAmount(couponId)).thenReturn(10L)
         whenever(couponIssueRequestRepository.saveRequestingUser(userId, couponId)).thenReturn(true)
         whenever(couponIssueRequestRepository.decreaseCouponAmount(couponId)).thenReturn(9L)
 

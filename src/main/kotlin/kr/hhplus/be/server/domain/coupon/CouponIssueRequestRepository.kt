@@ -7,9 +7,9 @@ interface CouponIssueRequestRepository {
 
     fun saveIssueRequest(userId: Long, couponId: Long)
 
-    fun findRequestToIssue(couponId: Long): Long?
+    fun findRequestForIssue(couponId: Long): Long?
 
-    fun getCouponAmount(couponId: Long): Long?
+    fun findCouponAmount(couponId: Long): Long?
 
     fun saveRequestingUser(userId: Long, couponId: Long): Boolean
 
