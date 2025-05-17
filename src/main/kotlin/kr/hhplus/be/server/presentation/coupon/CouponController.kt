@@ -41,7 +41,7 @@ class CouponController(
         @RequestBody request: CouponRequest.Issue,
     ): CouponResponse.Issue {
 
-        val userCoupon = couponService.issue(CouponCommand.Issue(request.couponId, request.userId))
+        val userCoupon = couponService.requestIssue(CouponCommand.Issue(request.couponId, request.userId))
         return CouponResponse.Issue(userCoupon.userId, userCoupon.couponId)
     }
 

@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.persistence.coupon
+package kr.hhplus.be.server.infrastructure.persistence.coupon.jpa
 
 import jakarta.persistence.LockModeType
 import kr.hhplus.be.server.infrastructure.persistence.coupon.entity.UserCouponEntity

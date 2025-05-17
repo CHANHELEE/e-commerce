@@ -3,7 +3,10 @@ package kr.hhplus.be.server.infrastructure.persistence.statistics
 import kr.hhplus.be.server.domain.statistics.product.ProductStatisticRepository
 import kr.hhplus.be.server.domain.statistics.product.model.entity.PopularProduct
 import kr.hhplus.be.server.domain.statistics.product.model.PopularProductAggregateView
+import kr.hhplus.be.server.infrastructure.persistence.statistics.jpa.PopularProductJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.statistics.model.entity.PopularProductEntity
+import kr.hhplus.be.server.infrastructure.persistence.statistics.redis.PopularProductRedisRepository
+import kr.hhplus.be.server.infrastructure.persistence.statistics.redis.ProductStatisticCacheRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
@@ -12,7 +15,8 @@ import java.time.LocalDateTime
 @Repository
 class ProductStatisticRepositoryImpl(
     private val popularProductJpaRepository: PopularProductJpaRepository,
-    private val popularProductStatisticCacheRepository: ProductStatisticCacheRepository
+    private val popularProductStatisticCacheRepository: ProductStatisticCacheRepository,
+    private val popularProductRedisRepository: PopularProductRedisRepository
 ) : ProductStatisticRepository {
 
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -50,5 +54,9 @@ class ProductStatisticRepositoryImpl(
                     productName = it.name,
                 )
             }
+    }
+
+    override fun increaseDailyPopularProduct(productId: Long, quantity: Double) {
+        popularProductRedisRepository.increaseDaily(productId, quantity)
     }
 }

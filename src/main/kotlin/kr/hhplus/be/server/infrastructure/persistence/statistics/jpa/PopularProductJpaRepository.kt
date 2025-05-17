@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.persistence.statistics
+package kr.hhplus.be.server.infrastructure.persistence.statistics.jpa
 
 import kr.hhplus.be.server.infrastructure.persistence.statistics.model.PopularProductProjection
 import kr.hhplus.be.server.infrastructure.persistence.statistics.model.entity.PopularProductEntity

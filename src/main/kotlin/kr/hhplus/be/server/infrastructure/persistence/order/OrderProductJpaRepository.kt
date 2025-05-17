@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface OrderProductJpaRepository : JpaRepository<OrderProductEntity, Long> {
 
-    fun findAllByOrderIdAndDeletedAtIsNotNull(orderId: Long): List<OrderProductEntity>
+    fun findAllByOrderIdAndDeletedAtIsNull(orderId: Long): List<OrderProductEntity>
 }

@@ -13,4 +13,6 @@ interface ProductStatisticRepository {
     fun saveAllPopularProducts(popularProduct: List<PopularProduct>)
 
     fun findTop5BestSellingProductsSince(startDate: LocalDateTime): List<PopularProductAggregateView>?
+
+    fun increaseDailyPopularProduct(productId: Long, quantity: Double)
 }

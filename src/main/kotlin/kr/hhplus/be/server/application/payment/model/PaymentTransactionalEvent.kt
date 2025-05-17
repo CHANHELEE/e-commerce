@@ -8,4 +8,8 @@ class PaymentTransactionalEvent {
         val orderId: Long,
         val status: OrderStatus = OrderStatus.FAIL
     )
+
+    data class TransactionCommitEvent(
+        val productIdToQuantity: Map<Long, Long>
+    )
 }

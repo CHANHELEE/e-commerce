@@ -50,6 +50,7 @@ class PaymentFacade(
             }
 
             var originTotalPrice = 0L
+            val productIdToQuantity = mutableMapOf<Long, Long>()
             orderService.getAllActiveOrderProductsBy(OrderCommand.Order(order.id)).forEach {
 
                 productService.decreaseStock(
@@ -62,6 +63,10 @@ class PaymentFacade(
 
                 val product = productService.getBy(ProductCommand.Product(it.productId))
                 originTotalPrice += product.price * it.quantity
+
+
+                productIdToQuantity[it.productId] =
+                    productIdToQuantity.getOrDefault(it.productId, 0L) + it.quantity
             }
 
             val payTotalPrice = originTotalPrice - (coupon?.discountPrice ?: 0L)
@@ -83,6 +88,11 @@ class PaymentFacade(
                     status = PaymentStatus.SUCCESS,
                 )
             )
+
+            applicationEventPublisher.publishEvent(
+                PaymentTransactionalEvent.TransactionCommitEvent(productIdToQuantity)
+            )
+
             payment
         } catch (ex: BusinessException) {
 

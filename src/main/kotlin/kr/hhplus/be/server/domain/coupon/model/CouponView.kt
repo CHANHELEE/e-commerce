@@ -27,6 +27,11 @@ data class UserCouponView(
     }
 }
 
+data class CouponIssueRequestView(
+    var couponId: Long,
+    var userId: Long,
+)
+
 data class CouponView(
     val id: Long = 0,
     var amount: Long,
