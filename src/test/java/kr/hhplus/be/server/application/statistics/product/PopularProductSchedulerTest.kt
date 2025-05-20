@@ -16,12 +16,16 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.given
 import org.mockito.kotlin.whenever
+import org.springframework.data.redis.core.StringRedisTemplate
 
 @ExtendWith(MockitoExtension::class)
 class PopularProductSchedulerTest {
 
     @Mock
     lateinit var productStatisticRepository: ProductStatisticRepository
+
+    @Mock
+    lateinit var redisTemplate: StringRedisTemplate
 
     @InjectMocks
     lateinit var scheduler: PopularProductScheduler
