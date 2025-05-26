@@ -90,7 +90,11 @@ class PaymentFacade(
             )
 
             applicationEventPublisher.publishEvent(
-                PaymentTransactionalEvent.TransactionCommitEvent(productIdToQuantity)
+                PaymentTransactionalEvent.TransactionCommitEvent(
+                    paymentId = payment.id,
+                    userId = order.userId,
+                    productIdToQuantity = productIdToQuantity,
+                )
             )
 
             payment

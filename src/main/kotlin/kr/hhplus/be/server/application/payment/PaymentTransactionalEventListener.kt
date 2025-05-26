@@ -1,36 +1,27 @@
 package kr.hhplus.be.server.application.payment
 
 import kr.hhplus.be.server.application.payment.model.PaymentTransactionalEvent
-import kr.hhplus.be.server.domain.order.OrderService
-import kr.hhplus.be.server.domain.order.model.OrderCommand
-import kr.hhplus.be.server.domain.statistics.product.ProductStatisticService
-import kr.hhplus.be.server.domain.statistics.product.model.PopularProductCommand
+import kr.hhplus.be.server.infrastructure.api.payment.OrderDataPlatformClient
+import kr.hhplus.be.server.infrastructure.api.payment.model.OrderDataPlatformDto
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
 
 @Component
 class PaymentTransactionalEventListener(
-    private val orderService: OrderService,
-    private val productStatisticService: ProductStatisticService,
+    private val orderDataPlatformClient: OrderDataPlatformClient,
 ) {
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun rollBack(event: PaymentTransactionalEvent.TransactionRollBackEvent) {
-        orderService.modifyStatus(
-            OrderCommand.ModifyStatus(
-                event.orderId,
-                event.status,
-            )
-        )
-    }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    fun commit(event: PaymentTransactionalEvent.TransactionCommitEvent) {
-        productStatisticService.increaseDailyPopularProduct(PopularProductCommand.IncreaseDaily(event.productIdToQuantity))
+    fun sendToOrderDataPlatform(event: PaymentTransactionalEvent.TransactionCommitEvent) {
+        orderDataPlatformClient.sendSuccessOrder(
+            OrderDataPlatformDto.PaymentSuccess(
+                paymentId = event.paymentId,
+                userId = event.userId,
+                productIdToQuantity = event.productIdToQuantity,
+            )
+        )
     }
 }

@@ -10,6 +10,8 @@ class PaymentTransactionalEvent {
     )
 
     data class TransactionCommitEvent(
+        val paymentId: Long,
+        val userId: Long,
         val productIdToQuantity: Map<Long, Long>
     )
 }

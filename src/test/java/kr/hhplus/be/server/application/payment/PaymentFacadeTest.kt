@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.application.payment
 
 import kr.hhplus.be.server.application.payment.model.PaymentCriteria
+import kr.hhplus.be.server.application.payment.model.PaymentTransactionalEvent
 import kr.hhplus.be.server.domain.coupon.CouponService
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.coupon.model.CouponView
@@ -167,5 +168,6 @@ class PaymentFacadeTest {
         verify(productService, times(1)).getBy(any())
         verify(pointService, times(1)).use(any())
         verify(paymentService, times(1)).pay(any())
+        verify(applicationEventPublisher).publishEvent(isA<PaymentTransactionalEvent.TransactionCommitEvent>())
     }
 }
