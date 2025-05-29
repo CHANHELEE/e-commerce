@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.infrastructure.persistence.coupon
 
 import kr.hhplus.be.server.domain.coupon.CouponIssueRequestRepository
+import kr.hhplus.be.server.domain.coupon.model.CouponsIssueResult
 import kr.hhplus.be.server.infrastructure.persistence.coupon.redis.CouponIssueRequestRedisRepository
 import org.springframework.stereotype.Repository
 
@@ -23,5 +24,9 @@ class CouponIssueRequestRepositoryImpl(
 
     override fun saveResult(requestId: String, code: String) {
         return couponIssueRequestRedisRepository.saveResult(requestId, code)
+    }
+
+    override fun getResult(requestId: String): CouponsIssueResult? {
+        return couponIssueRequestRedisRepository.findResult(requestId)
     }
 }

@@ -32,7 +32,7 @@ enum class BusinessErrorCode(
     COUPON_ALREADY_ISSUED("USER-COUPON-409", "이미 발급된 쿠폰입니다.", 409),
     COUPON_NOT_EXIST("COUPON-404", "해당 쿠폰을 조회할 수 없습니다.", 404),
     COUPON_OUT_OF_AMOUNT("COUPON-405", "해당 쿠폰은 모두 소진되었습니다.", 409),
-    DUPLICATED_COUPON_ISSUE_REQUEST("COUPON-406", "중복 된 쿠폰 발급 요청 입니다.", 409),
+    COUPON_ISSUE_RESULT_NOT_EXIST("COUPON-406", "해당 요청에 대한 결과가 존재하지 않습니다.", 404),
 
     //주문
     ORDER_NOT_EXIST("ORDER-404", "조회 가능한 주문이 없습니다.", 404),

@@ -44,4 +44,19 @@ class CouponController(
         val userCoupon = couponService.requestIssue(CouponCommand.RequestIssue(request.couponId, request.userId))
         return CouponResponse.Issue(userCoupon.requestId)
     }
+
+    @Operation(
+        summary = "쿠폰 발급 확인", responses = [SwaggerApiResponse(
+            responseCode = "200", description = "쿠폰 발급 확인"
+        )]
+    )
+    @GetMapping("/check-issued")
+    @SuccessResponse
+    fun checkIssued(
+        @RequestParam requestId: String,
+    ): CouponResponse.IssueResult {
+
+        val couponsIssueResult = couponService.checkIssued(requestId)
+        return CouponResponse.IssueResult(couponsIssueResult.requestId, couponsIssueResult.resultCode)
+    }
 }

@@ -3,10 +3,7 @@ package kr.hhplus.be.server.domain.coupon
 import com.fasterxml.jackson.databind.ObjectMapper
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
-import kr.hhplus.be.server.domain.coupon.model.CouponCommand
-import kr.hhplus.be.server.domain.coupon.model.CouponIssueRequestView
-import kr.hhplus.be.server.domain.coupon.model.CouponView
-import kr.hhplus.be.server.domain.coupon.model.UserCouponView
+import kr.hhplus.be.server.domain.coupon.model.*
 import kr.hhplus.be.server.domain.coupon.model.entity.UserCoupon
 import kr.hhplus.be.server.domain.coupon.model.event.CouponIssueFailedEvent
 import kr.hhplus.be.server.domain.coupon.model.event.CouponIssuedSuccessEvent
@@ -105,5 +102,10 @@ class CouponService(
             )
         )
         return CouponIssueRequestView(requestId = requestId)
+    }
+
+    fun checkIssued(requestId: String): CouponsIssueResult {
+        return couponIssueRequestRepository.getResult(requestId)
+            ?: throw BusinessException(BusinessErrorCode.COUPON_ISSUE_RESULT_NOT_EXIST)
     }
 }

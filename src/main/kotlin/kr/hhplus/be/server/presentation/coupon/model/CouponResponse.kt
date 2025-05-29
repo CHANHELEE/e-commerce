@@ -12,4 +12,9 @@ class CouponResponse {
     data class Issue(
         val requestId: String,
     )
+
+    data class IssueResult(
+        val requestId: String,
+        val resultCode: String,
+    )
 }
