@@ -1,15 +1,21 @@
 package kr.hhplus.be.server.infrastructure.api.payment
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import kr.hhplus.be.server.infrastructure.api.payment.model.OrderDataPlatformDto
+import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestClient
 
 @Component
 class OrderDataPlatformClient(
-    private val orderDataPlatformRestClient: RestClient,
+    private val kafkaTemplate: KafkaTemplate<String, Any>,
+    private val objectMapper: ObjectMapper,
 ) {
 
-    fun sendSuccessOrder(body: OrderDataPlatformDto.PaymentSuccess) {
-//        orderDataPlatformRestClient.post().uri("/mock").body(body).retrieve().toBodilessEntity()
+    fun sendSuccessOrder(payload: OrderDataPlatformDto.PaymentSuccess) {
+        kafkaTemplate.send(
+            "orderDataPlatform",
+            payload.paymentId.toString(),
+            objectMapper.writeValueAsString(payload)
+        )
     }
 }
