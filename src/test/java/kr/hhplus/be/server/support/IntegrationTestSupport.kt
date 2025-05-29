@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.support
 
-import kr.hhplus.be.server.application.coupon.CouponScheduler
 import kr.hhplus.be.server.config.TestEventPublisherConfig
+import kr.hhplus.be.server.domain.coupon.CouponIssueRequestRepository
 import kr.hhplus.be.server.domain.coupon.CouponService
 import kr.hhplus.be.server.infrastructure.persistence.coupon.jpa.CouponJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.coupon.jpa.UserCouponJpaRepository
@@ -75,7 +75,7 @@ class IntegrationTestSupport {
     lateinit var couponService: CouponService
 
     @Autowired
-    lateinit var couponScheduler: CouponScheduler
+    lateinit var couponIssueRequestRepository: CouponIssueRequestRepository
 
     @MockitoSpyBean
     lateinit var applicationEventPublisher: ApplicationEventPublisher

@@ -10,7 +10,6 @@ class CouponResponse {
     )
 
     data class Issue(
-        val userId: Long,
-        val couponId: Long,
+        val requestId: String,
     )
 }

@@ -1,10 +1,12 @@
 package kr.hhplus.be.server.domain.coupon
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.coupon.model.entity.UserCoupon
 import kr.hhplus.be.server.common.BusinessException
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.domain.coupon.model.entity.Coupon
+import kr.hhplus.be.server.domain.coupon.model.event.CouponIssuedSuccessEvent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -15,6 +17,8 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import org.springframework.context.ApplicationEventPublisher
+import org.springframework.kafka.core.KafkaTemplate
 
 @ExtendWith(MockitoExtension::class)
 class CouponServiceTest {
@@ -24,6 +28,15 @@ class CouponServiceTest {
 
     @Mock
     lateinit var couponIssueRequestRepository: CouponIssueRequestRepository
+
+    @Mock
+    lateinit var applicationEventPublisher: ApplicationEventPublisher
+
+    @Mock
+    lateinit var kafkaTemplate: KafkaTemplate<String, Any>
+
+    @Mock
+    lateinit var objectMapper: ObjectMapper
 
     @InjectMocks
     lateinit var couponService: CouponService
@@ -113,7 +126,7 @@ class CouponServiceTest {
             // given
             val coupon = Coupon(id = 1L, name = "할인쿠폰", amount = 5L, discountPrice = 1000L)
             val userCoupon = UserCoupon(id = 1L, userId = 10L, couponId = 1L)
-            val command = CouponCommand.Issue(userId = 10L, couponId = 1L)
+            val command = CouponCommand.Issue(userId = 10L, couponId = 1L, requestId = "1-10")
 
             given(couponRepository.findCouponWithLockBy(1L)).willReturn(coupon)
             given(couponRepository.saveUserCoupon(any())).willReturn(userCoupon)
@@ -127,12 +140,13 @@ class CouponServiceTest {
                 .contains(userCoupon.id, userCoupon.userId, userCoupon.couponId)
             verify(couponRepository, times(1)).findCouponWithLockBy(any())
             verify(couponRepository, times(1)).saveUserCoupon(any())
+            verify(applicationEventPublisher, times(1)).publishEvent(isA<CouponIssuedSuccessEvent>())
         }
 
         @Test
         fun `쿠폰이 존재하지 않으면 예외가 발생한다`() {
             // given
-            val command = CouponCommand.Issue(userId = 10L, couponId = 999L)
+            val command = CouponCommand.Issue(userId = 10L, couponId = 999L, requestId = "999-10")
             given(couponRepository.findCouponWithLockBy(999L)).willReturn(null)
 
             // when & then
@@ -147,7 +161,7 @@ class CouponServiceTest {
         fun `쿠폰 수량이 0이면 BusinessException(COUPON_OUT_OF_AMOUNT)예외가 발생한다`() {
             // given
             val coupon = Coupon(id = 1L, name = "할인쿠폰", amount = 0L, discountPrice = 1000L)
-            val command = CouponCommand.Issue(userId = 10L, couponId = 1L)
+            val command = CouponCommand.Issue(userId = 10L, couponId = 1L, requestId = "1-10")
             given(couponRepository.findCouponWithLockBy(1L)).willReturn(coupon)
 
             // when & then
@@ -161,7 +175,7 @@ class CouponServiceTest {
         @Test
         fun `사용자에게 이미 발급된 쿠폰이면 BusinessException(COUPON_ALREADY_ISSUED)예외가 발생한다`() {
             // given
-            val command = CouponCommand.Issue(userId = 10L, couponId = 1L)
+            val command = CouponCommand.Issue(userId = 10L, couponId = 1L, requestId = "1-10")
             val useCoupon = UserCoupon(couponId = command.couponId, userId = command.userId)
             given(couponRepository.findUserCouponBy(command.userId, command.couponId)).willReturn(useCoupon)
 
@@ -236,22 +250,5 @@ class CouponServiceTest {
 
             assertThat(exception.errorCode).isEqualTo(BusinessErrorCode.USER_COUPON_NOT_EXIST)
         }
-    }
-
-    @Test
-    fun `정상적으로 쿠폰 발급 요청이 처리되면 발급 요청이 큐에 저장된다`() {
-
-        // given
-        whenever(couponIssueRequestRepository.findCouponAmount(couponId)).thenReturn(10L)
-        whenever(couponIssueRequestRepository.saveRequestingUser(userId, couponId)).thenReturn(true)
-        whenever(couponIssueRequestRepository.decreaseCouponAmount(couponId)).thenReturn(9L)
-
-        // when
-        val result = couponService.requestIssue(CouponCommand.Issue(couponId, userId))
-
-        // then
-        assertThat(userId).isEqualTo(result.userId)
-        assertThat(couponId).isEqualTo(result.couponId)
-        verify(couponIssueRequestRepository).saveIssueRequest(userId, couponId)
     }
 }

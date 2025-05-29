@@ -20,6 +20,12 @@ class CouponCommand {
     data class Issue(
         val couponId: Long,
         val userId: Long,
+        val requestId: String,
+    )
+
+    data class RequestIssue(
+        val couponId: Long,
+        val userId: Long,
     )
 
     data class UpdateUserCoupon(

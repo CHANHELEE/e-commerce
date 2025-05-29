@@ -8,34 +8,23 @@ class CouponIssueRequestRedisRepository(
     private val redisTemplate: RedisTemplate<String, String>,
 ) {
 
-    fun findCouponAmount(couponId: Long): Long? {
-
-        return redisTemplate.opsForValue().get("${CouponIssueKeyPrefix.COUPON_AMOUNT.prefix}$couponId")?.toLongOrNull()
-    }
-
-
-    fun decreaseCouponAmount(couponId: Long): Long {
-        return redisTemplate.opsForValue()
-            .decrement("${CouponIssueKeyPrefix.COUPON_AMOUNT.prefix}$couponId")!!
-    }
-
-    fun saveRequestingUser(userId: Long, couponId: Long): Boolean {
+    fun isAvailableCoupon(couponId: Long): Boolean {
         return redisTemplate.opsForSet()
-            .add("${CouponIssueKeyPrefix.REQUESTING_USER.prefix}$couponId", userId.toString()) == 1L
+            .isMember(CouponIssueKeyPrefix.AVAILABLE.prefix, couponId.toString()) == true
     }
 
-    fun deleteCouponAmount(couponId: Long): Boolean {
-        return redisTemplate.delete("${CouponIssueKeyPrefix.COUPON_AMOUNT.prefix}$couponId")
+    fun deleteAvailableCoupon(couponId: Long) {
+        redisTemplate.opsForSet()
+            .remove(CouponIssueKeyPrefix.AVAILABLE.prefix, couponId.toString())
     }
 
-    fun saveIssueRequest(userId: Long, couponId: Long) {
-        redisTemplate.opsForList()
-            .rightPush("${CouponIssueKeyPrefix.ISSUE_TARGET.prefix}$couponId", userId.toString())
+    fun saveAvailableCoupon(couponId: Long) {
+        redisTemplate.opsForSet()
+            .add(CouponIssueKeyPrefix.AVAILABLE.prefix, couponId.toString())
     }
 
-    fun findRequestForIssue(couponId: Long): Long? {
-        return redisTemplate.opsForList()
-            .leftPop("${CouponIssueKeyPrefix.ISSUE_TARGET.prefix}$couponId")
-            ?.toLong()
+    fun saveResult(requestId: String, code: String) {
+        return redisTemplate.opsForHash<String, String>()
+            .put(CouponIssueKeyPrefix.RESULT.prefix, requestId, code)
     }
 }

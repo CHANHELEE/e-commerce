@@ -62,8 +62,8 @@ class CouponControllerE2eTest : E2eTestSupport() {
                 discountPrice = 1000L,
             )
         )
-
-        redisTemplate.opsForValue().set("${CouponIssueKeyPrefix.COUPON_AMOUNT.prefix}${coupon.id}", couponAmount.toString())
+        val requestId = coupon.id.toString() + "-" + user.id.toString()
+        couponIssueRequestRepository.saveAvailableCoupon(couponId = coupon.id)
 
         val request = CouponRequest.Issue(
             couponId = coupon.id,
@@ -78,7 +78,6 @@ class CouponControllerE2eTest : E2eTestSupport() {
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("$.data.userId").isEqualTo(user.id!!)
-            .jsonPath("$.data.couponId").isEqualTo(coupon.id)
+            .jsonPath("$.data.requestId").isEqualTo(requestId)
     }
 }

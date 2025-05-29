@@ -1,22 +1,28 @@
 package kr.hhplus.be.server.domain.coupon
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import kr.hhplus.be.server.common.BusinessException
-import kr.hhplus.be.server.common.annotations.DistributedLock
 import kr.hhplus.be.server.common.enums.BusinessErrorCode
-import kr.hhplus.be.server.common.model.DistributedLockKeys
-import kr.hhplus.be.server.common.model.DistributedLockPrefixes
 import kr.hhplus.be.server.domain.coupon.model.CouponCommand
 import kr.hhplus.be.server.domain.coupon.model.CouponIssueRequestView
 import kr.hhplus.be.server.domain.coupon.model.CouponView
 import kr.hhplus.be.server.domain.coupon.model.UserCouponView
 import kr.hhplus.be.server.domain.coupon.model.entity.UserCoupon
+import kr.hhplus.be.server.domain.coupon.model.event.CouponIssueFailedEvent
+import kr.hhplus.be.server.domain.coupon.model.event.CouponIssuedSuccessEvent
+import kr.hhplus.be.server.presentation.coupon.model.CouponIssuePayload
+import org.springframework.context.ApplicationEventPublisher
+import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class CouponService(
     private val couponRepository: CouponRepository,
-    private val couponIssueRequestRepository: CouponIssueRequestRepository
+    private val couponIssueRequestRepository: CouponIssueRequestRepository,
+    private val kafkaTemplate: KafkaTemplate<String, Any>,
+    private val objectMapper: ObjectMapper,
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
     fun getUserCouponBy(couponCommand: CouponCommand.UserCoupon): UserCouponView =
@@ -40,12 +46,26 @@ class CouponService(
 
         val coupon = couponRepository.findCouponWithLockBy(couponCommand.couponId)
             ?: throw BusinessException(BusinessErrorCode.COUPON_NOT_EXIST)
-        coupon.issue()
-        couponRepository.saveCoupon(coupon)
 
-        val userCoupon =
-            couponRepository.saveUserCoupon(UserCoupon(couponId = coupon.id, userId = couponCommand.userId))
-        return UserCouponView.from(userCoupon)
+        try {
+            coupon.issue()
+            couponRepository.saveCoupon(coupon)
+
+            val userCoupon =
+                couponRepository.saveUserCoupon(UserCoupon(couponId = coupon.id, userId = couponCommand.userId))
+
+            applicationEventPublisher.publishEvent(CouponIssuedSuccessEvent(couponCommand.requestId))
+            return UserCouponView.from(userCoupon)
+        } catch (e: BusinessException) {
+            applicationEventPublisher.publishEvent(
+                CouponIssueFailedEvent(
+                    couponCommand.requestId,
+                    couponCommand.couponId,
+                    e
+                )
+            )
+            throw e
+        }
     }
 
     fun validateUse(couponCommand: CouponCommand.UserCoupon): UserCouponView {
@@ -66,34 +86,24 @@ class CouponService(
         return UserCouponView.from(userCoupon)
     }
 
-    fun requestIssue(couponCommand: CouponCommand.Issue): CouponIssueRequestView {
+    fun requestIssue(couponCommand: CouponCommand.RequestIssue): CouponIssueRequestView {
 
-        val couponAmount = couponIssueRequestRepository.findCouponAmount(couponCommand.couponId)
-            ?: throw BusinessException(BusinessErrorCode.COUPON_NOT_EXIST)
-        if (couponAmount <= 0) {
-            throw BusinessException(BusinessErrorCode.COUPON_NOT_EXIST)
-        }
-
-        val new =
-            couponIssueRequestRepository.saveRequestingUser(
-                userId = couponCommand.userId,
-                couponId = couponCommand.couponId
-            )
-        if (!new) {
-            throw BusinessException(BusinessErrorCode.DUPLICATED_COUPON_ISSUE_REQUEST)
-        }
-
-        val decreasedCouponAmount = couponIssueRequestRepository.decreaseCouponAmount(couponCommand.couponId)
-        if (decreasedCouponAmount < 0) {
-            couponIssueRequestRepository.deleteCouponAmount(couponCommand.couponId)
+        val isAvailable = couponIssueRequestRepository.isAvailableCoupon(couponCommand.couponId)
+        if (!isAvailable) {
             throw BusinessException(BusinessErrorCode.COUPON_OUT_OF_AMOUNT)
         }
 
-        couponIssueRequestRepository.saveIssueRequest(couponCommand.userId, couponCommand.couponId)
-        return CouponIssueRequestView(couponId = couponCommand.couponId, userId = couponCommand.userId)
-    }
-
-    fun findRequestForIssue(couponId: Long): Long? {
-        return couponIssueRequestRepository.findRequestForIssue(couponId)
+        val requestId = couponCommand.couponId.toString() + "-" + couponCommand.userId.toString()
+        kafkaTemplate.send(
+            "couponIssue",
+            couponCommand.couponId.toString(),
+            objectMapper.writeValueAsString(
+                CouponIssuePayload.from(
+                    couponCommand = couponCommand,
+                    requestId = requestId
+                )
+            )
+        )
+        return CouponIssueRequestView(requestId = requestId)
     }
 }

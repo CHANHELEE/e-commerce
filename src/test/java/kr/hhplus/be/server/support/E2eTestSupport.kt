@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.support
 
+import kr.hhplus.be.server.domain.coupon.CouponIssueRequestRepository
 import kr.hhplus.be.server.domain.statistics.product.ProductStatisticRepository
 import kr.hhplus.be.server.infrastructure.persistence.coupon.jpa.CouponJpaRepository
 import kr.hhplus.be.server.infrastructure.persistence.coupon.jpa.UserCouponJpaRepository
@@ -67,6 +68,9 @@ class E2eTestSupport {
 
     @Autowired
     lateinit var redisTemplate: RedisTemplate<String, String>
+
+    @Autowired
+    lateinit var couponIssueRequestRepository: CouponIssueRequestRepository
 
     @LocalServerPort
     var port: Int = 28080

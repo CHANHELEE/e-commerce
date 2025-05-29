@@ -5,15 +5,11 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CouponIssueRequestRepository {
 
-    fun saveIssueRequest(userId: Long, couponId: Long)
+    fun isAvailableCoupon(couponId: Long): Boolean
 
-    fun findRequestForIssue(couponId: Long): Long?
+    fun deleteAvailableCoupon(couponId: Long)
 
-    fun findCouponAmount(couponId: Long): Long?
+    fun saveAvailableCoupon(couponId: Long)
 
-    fun saveRequestingUser(userId: Long, couponId: Long): Boolean
-
-    fun decreaseCouponAmount(couponId: Long): Long
-
-    fun deleteCouponAmount(couponId: Long)
+    fun saveResult(requestId: String, code: String)
 }
