@@ -1,19 +1,18 @@
 package kr.hhplus.be.server.domain.coupon
 
+import kr.hhplus.be.server.domain.coupon.model.CouponsIssueResult
 import org.springframework.stereotype.Repository
 
 @Repository
 interface CouponIssueRequestRepository {
 
-    fun saveIssueRequest(userId: Long, couponId: Long)
+    fun isAvailableCoupon(couponId: Long): Boolean
 
-    fun findRequestForIssue(couponId: Long): Long?
+    fun deleteAvailableCoupon(couponId: Long)
 
-    fun findCouponAmount(couponId: Long): Long?
+    fun saveAvailableCoupon(couponId: Long)
 
-    fun saveRequestingUser(userId: Long, couponId: Long): Boolean
+    fun saveResult(requestId: String, code: String)
 
-    fun decreaseCouponAmount(couponId: Long): Long
-
-    fun deleteCouponAmount(couponId: Long)
+    fun getResult(requestId: String): CouponsIssueResult?
 }

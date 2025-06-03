@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.presentation.coupon
 
+import kr.hhplus.be.server.common.enums.BusinessErrorCode
 import kr.hhplus.be.server.infrastructure.persistence.coupon.entity.CouponEntity
 import kr.hhplus.be.server.infrastructure.persistence.coupon.redis.CouponIssueKeyPrefix
 import kr.hhplus.be.server.infrastructure.persistence.user.entity.UserEntity
@@ -62,8 +63,8 @@ class CouponControllerE2eTest : E2eTestSupport() {
                 discountPrice = 1000L,
             )
         )
-
-        redisTemplate.opsForValue().set("${CouponIssueKeyPrefix.COUPON_AMOUNT.prefix}${coupon.id}", couponAmount.toString())
+        val requestId = coupon.id.toString() + "-" + user.id.toString()
+        couponIssueRequestRepository.saveAvailableCoupon(couponId = coupon.id)
 
         val request = CouponRequest.Issue(
             couponId = coupon.id,
@@ -78,7 +79,54 @@ class CouponControllerE2eTest : E2eTestSupport() {
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("$.data.userId").isEqualTo(user.id!!)
-            .jsonPath("$.data.couponId").isEqualTo(coupon.id)
+            .jsonPath("$.data.requestId").isEqualTo(requestId)
+    }
+
+    @Test
+    fun `GET - 쿠폰 발급 여부를 확인한다`() {
+        //given
+        val user = userJpaRepository.save(
+            UserEntity(
+                name = "user",
+            )
+        )
+
+        val couponAmount = 50L
+        val coupon = couponJpaRepository.save(
+            CouponEntity(
+                amount = couponAmount,
+                name = "test_coupon",
+                discountPrice = 1000L,
+            )
+        )
+        val requestId = coupon.id.toString() + "-" + user.id.toString()
+        val resultCode = "SUCCESS"
+        couponIssueRequestRepository.saveAvailableCoupon(couponId = coupon.id)
+        couponIssueRequestRepository.saveResult(requestId, resultCode)
+
+        // when & then
+        webTestClient.get()
+            .uri { builder ->
+                builder.path("/coupons/check-issued")
+                    .queryParam("requestId", requestId)
+                    .build()
+            }
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.data.requestId").isEqualTo(requestId)
+            .jsonPath("$.data.resultCode").isEqualTo(resultCode)
+
+
+        webTestClient.get()
+            .uri { builder ->
+                builder.path("/coupons/check-issued")
+                    .queryParam("requestId", "expected404")
+                    .build()
+            }
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody()
+            .jsonPath("$.code").isEqualTo(BusinessErrorCode.COUPON_ISSUE_RESULT_NOT_EXIST.code)
     }
 }

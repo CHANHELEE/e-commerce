@@ -10,7 +10,11 @@ class CouponResponse {
     )
 
     data class Issue(
-        val userId: Long,
-        val couponId: Long,
+        val requestId: String,
+    )
+
+    data class IssueResult(
+        val requestId: String,
+        val resultCode: String,
     )
 }

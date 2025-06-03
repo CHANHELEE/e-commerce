@@ -28,8 +28,7 @@ data class UserCouponView(
 }
 
 data class CouponIssueRequestView(
-    var couponId: Long,
-    var userId: Long,
+    var requestId: String,
 )
 
 data class CouponView(
