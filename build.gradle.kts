@@ -56,17 +56,22 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-jooq")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.redisson:redisson-spring-boot-starter:3.45.1")
+	// Kafka
+	implementation("org.springframework.kafka:spring-kafka")
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
+	testImplementation("org.awaitility:awaitility:4.2.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	dependencies {
 		testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 		testImplementation("org.springframework.boot:spring-boot-starter-webflux")
 	}
+	testImplementation("org.springframework.kafka:spring-kafka-test")
+	testImplementation("org.testcontainers:kafka")
 
 	// Swagger (springdoc-openapi)
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")

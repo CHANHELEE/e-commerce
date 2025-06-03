@@ -30,4 +30,29 @@ spring:
       host: 127.0.0.1
       port: 36379
       password: ecommerce
-
+  kafka:
+    bootstrap-servers: 127.0.0.1:9094
+    properties:
+      request.timeout.ms: 20000
+      retry.backoff.ms: 500
+      auto:
+        create.topics.enable: false
+        register.schemas: false
+        offset.reset: earliest
+      use.latest.version: true
+      basic.auth.credentials.source: USER_INFO
+    consumer:
+      enable-auto-commit: false
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 3
+      max-block-ms: 10000
+      acks: 1
+    listener:
+      ack-mode: manual

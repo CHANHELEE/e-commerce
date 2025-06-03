@@ -1,3 +1,6 @@
+networks:
+  kafka_network:
+
 services:
   mysql:
     image: mysql:8.0
@@ -9,7 +12,7 @@ services:
     ports:
       - "33306:3306"
     volumes:
-      - /Users/lee/Documents/개인공부/항해99/2주차/과제/docker/volume:/var/lib/mysql
+      - ${path}:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
 
   redis:
@@ -19,3 +22,41 @@ services:
     ports:
       - "36379:6379"
     command: ["redis-server", "--requirepass", "ecommerce"]
+
+  Kafka00Service:
+    image: bitnami/kafka:3.5.1-debian-11-r72
+    restart: unless-stopped
+    container_name: Kafka00Container
+    ports:
+      - '9094:9094'
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_KRAFT_CLUSTER_ID=Jr2dRMP0R0acXxGa4WY0xA
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@Kafka00Service:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://Kafka00Service:9092,EXTERNAL://127.0.0.1:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    networks:
+      - kafka_network
+    volumes:
+      - ${path}:/bitnami/kafka
+
+  KafkaWebUiService:
+    image: provectuslabs/kafka-ui:latest
+    restart: unless-stopped
+    container_name: KafkaWebUiContainer
+    ports:
+      - '8098:8080'
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=Single-Node-KRaft
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=Kafka00Service:9092
+      - DYNAMIC_CONFIG_ENABLED=true
+      - KAFKA_CLUSTERS_0_AUDIT_TOPICAUDITENABLED=true
+      - KAFKA_CLUSTERS_0_AUDIT_CONSOLEAUDITENABLED=true
+    networks:
+      - kafka_network
+
+
